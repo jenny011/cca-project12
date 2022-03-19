@@ -1,4 +1,6 @@
-# PART 1
+# CCA Project Part 1 and 2
+
+## PART 1
 
 Do these ONCE
 1. add to .bashrc: export PATH=$PATH:<your-path>/google-cloud-sdk/bin
@@ -11,7 +13,7 @@ Do these ONCE
 8. Fill in env.sh
 9. `./setup1.sh` only once
 
-
+Procedure for running experiment
 1. `./deploy1.sh`: deploy the cluster, the cluster should be running if no errors.
 2. ssh into client-agent and client-measure
 3. `./run1.sh <benchmark number>`: setup benchmark
