@@ -13,9 +13,9 @@ Do these ONCE
 8. Fill in env.sh
 9. `./setup1.sh` only once
 
-
-2. `./deploy1.sh`: deploy the cluster, the cluster should be running if no errors.
-3. ssh into client-agent and client-measure
-4. `./run1.sh <benchmark number>`: setup benchmark
-5. `./kill.sh <benchmark number>`: teardown benchmark
-6. `./delete_cluster.sh`: delete the cluster, MUST do if finished using cluster
+Procedure for running experiment
+1. `./deploy1.sh`: deploy the cluster, the cluster should be running if no errors.
+2. ssh into client-agent and client-measure
+3. `./run1.sh <benchmark number>`: setup benchmark
+4. `./kill.sh <benchmark number>`: teardown benchmark
+5. `./delete_cluster.sh`: delete the cluster, MUST do if finished using cluster
