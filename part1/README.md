@@ -1,4 +1,6 @@
-# PART 1
+# CCA Project Part 1 and 2
+
+## PART 1
 
 ## Do these ONCE
 1. add to .bashrc: export PATH=$PATH:<your-path>/google-cloud-sdk/bin
