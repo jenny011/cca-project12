@@ -11,6 +11,7 @@ if [ $# != 1 ] || [ $1 -eq 0 ] || [[ ! $1 =~ ^[0-9]+$ ]] || (($1 > 6))
 then
 	echo "Usage: ./kill1.sh <a number>"
 	echo "Valid numbers:"
+	echo "- 0: No interference"
 	echo "- 1: ibench-cpu"
 	echo "- 2: ibench-l1d"
 	echo "- 3: ibench-l1i"
@@ -20,14 +21,15 @@ then
 	exit 1
 fi
 
-NAME=("cpu" "l1d" "l1i" "l2" "llc" "membw")
-BENCHMARK="ibench-${NAME[$(($1 - 1))]}"
-echo "Killing job $BENCHMARK"
-# Kill the experiment
-kubectl delete pods $BENCHMARK
-if [ $? -ne 0 ]; then
-	echo "ERROR: delete pod $BENCHMARK failed."
-	exit 1
+if [ $1 -ne "0" ]; then
+	NAME=("cpu" "l1d" "l1i" "l2" "llc" "membw")
+	BENCHMARK="ibench-${NAME[$(($1 - 1))]}"
+	echo "Deleting $BENCHMARK"
+	kubectl delete pods $BENCHMARK
+	if [ $? -ne 0 ]; then
+		echo "ERROR: delete pod $BENCHMARK failed."
+		exit 1
+	fi
 fi
 
-echo "!!!!! MUST delete the cluster after use: run delete_cluster.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"

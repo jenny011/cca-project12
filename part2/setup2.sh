@@ -11,15 +11,14 @@
 # 6. ssh-keygen -t rsa -b 4096 -f cloud-computing
 
 
-echo "Fill in env1.sh with your values BEFORE you run this script"
-
+echo "Fill in env2.sh with your values BEFORE you run this script"
 
 CURR=$PWD
 # Export all the environmental vars (including your ethzid)
 # comment it out if exported
-source $CURR/env1.sh
+source $CURR/env2.sh
 
-echo "Run it only ONCE: create your resource bucket $KOPS_STATE_STORE"
+echo "Run it only ONCE: create your resource bucket $KOPS_STATE_STORE "
 # Create an empty bucket to store the configuration for your clusters
 gsutil mb $KOPS_STATE_STORE
 if [ $? -ne 0 ]; then
@@ -27,14 +26,8 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-# This is done already in env1.sh
+# This is done already in env2.sh
 # export KOPS_STATE_STORE=gs://cca-eth-2022-group-XXX-ethzid/
 
-# Connect to agent and measure nodes
-# ssh into agent
-# gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@client-agent-<PLACEHOLDER> --zone europe-west3-a
-# ssh into measure
-# gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@client-measure-<PLACEHOLDER> --zone europe-west3-a
-
-# Run experiments
-# Run "run1.sh"
+# Connect to parsec-server node
+# gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@parsec-server-<PLACEHOLDER> --zone europe-west3-a

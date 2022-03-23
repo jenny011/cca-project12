@@ -10,7 +10,7 @@ echo ">>>>> You are in $PART1_YAML_PATH >>>>>"
 PROJECT=`gcloud config get-value project`
 kops create -f part1.yaml
 if [ $? -ne 0 ]; then
-	echo "ERROR: part1.yaml create failed."
+	echo "ERROR: part1.yaml create failed. Have you replaced the placeholders in part1.yaml?"
 	exit 1
 fi
 
@@ -23,7 +23,7 @@ fi
 
 # Deploy a cluster using "kops"
 echo ">>>>> Deploying cluster... >>>>>"
-echo "!!!!! MUST delete the cluster after use: run delete_cluster.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"
 kops update cluster --name part1.k8s.local --yes --admin
 
 # Wait until the cluster is ready to use
@@ -36,6 +36,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo ">>>>> Cluster Ready! >>>>>"
+echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"
 
 # Output nodes info to a file
 kubectl get nodes -o wide > $NODES
@@ -48,8 +49,8 @@ echo "--------"
 cat $NODES
 echo "--------"
 echo "Now you can ssh into client-agent and client-measure in new terminal windows"
-echo "gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@client-agent-<placeholder> --zone europe-west3-a"
-echo "gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@client-measure-<placeholder> --zone europe-west3-a"
+echo "gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@client-agent-<PLACEHOLDER> --zone europe-west3-a"
+echo "gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@client-measure-<PLACEHOLDER> --zone europe-west3-a"
 
 # Run memcached
 kubectl create -f memcache-t1-cpuset.yaml
@@ -71,5 +72,5 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-echo "!!!!! MUST delete the cluster after use: run delete_cluster.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"
 

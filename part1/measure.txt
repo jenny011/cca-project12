@@ -23,9 +23,5 @@ make
 # Load the memcached database 
 ./mcperf -s MEMCACHED_IP --loadonly
 
-# Query memcached with throughput from TP_LOW to TP_HIGH QPS with increments of TP_STEP
-TP_LOW=5000
-# set to 80000 for exp
-TP_HIGH=15000
-TP_STEP=5000
-./mcperf -s MEMCACHED_IP -a INTERNAL_AGENT_IP --noload -T 16 -C 4 -D 4 -Q 1000 -c 4 -t 5 --scan $TP_LOW:$TP_HIGH:$TP_STEP
+# Query memcached with throughput from 5000 to 80000 QPS with increments of 5000
+./mcperf -s MEMCACHED_IP -a INTERNAL_AGENT_IP --noload -T 16 -C 4 -D 4 -Q 1000 -c 4 -t 5 --scan 5000:80000:5000
