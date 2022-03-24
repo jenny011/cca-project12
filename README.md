@@ -43,3 +43,10 @@ I created it for part2a and part2b. Copy the folder into your cloud-comp-arch-pr
 4. `./run-workload2.sh <workload number>`: run workload
 5. `./kill2.sh`: teardown benchmark
 6. `./delete2.sh <a OR b>`: delete the cluster, MUST do if finished using cluster
+
+
+## Part1-data
+interference_number.tsv
+
+## Part2-data
+interference_number/workload_number.dat

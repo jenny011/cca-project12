@@ -23,7 +23,7 @@ fi
 
 # Deploy a cluster using "kops"
 echo ">>>>> Deploying cluster... >>>>>"
-echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"
 kops update cluster --name part1.k8s.local --yes --admin
 
 # Wait until the cluster is ready to use
@@ -36,7 +36,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo ">>>>> Cluster Ready! >>>>>"
-echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"
 
 # Output nodes info to a file
 kubectl get nodes -o wide > $NODES
@@ -72,5 +72,5 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"
 

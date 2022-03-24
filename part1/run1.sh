@@ -51,4 +51,4 @@ echo "--------if NO, run 'kubectl get pods -o wide' manually in the terminal."
 echo "--------if YES, run experiments in the VMs."
 echo "You can run ./kill1.sh to delete a benchmark."
 
-echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"

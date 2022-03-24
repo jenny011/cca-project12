@@ -49,4 +49,4 @@ while true;
 done
 echo "You can run ./kill2.sh to delete all jobs and pods."
 
-echo "!!!!! MUST delete the cluster after use: run ./delete2.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"

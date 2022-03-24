@@ -32,4 +32,4 @@ if [ $1 -ne "0" ]; then
 	fi
 fi
 
-echo "!!!!! MUST delete the cluster after use: run ./delete1.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"

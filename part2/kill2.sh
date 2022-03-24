@@ -11,4 +11,4 @@ echo "Deleting all jobs and pods..."
 kubectl delete jobs --all 
 kubectl delete pods --all
 
-echo "!!!!! MUST delete the cluster after use: run ./delete2.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"

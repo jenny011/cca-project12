@@ -50,4 +50,4 @@ echo "-----do you see READY 1/1, STATUS Running for interference $1 you are crea
 echo "--------if NO, run 'kubectl get pods -o wide' manually in the terminal."
 echo "--------if YES, interference is fully started, run ./run-workoad2.sh."
 
-echo "!!!!! MUST delete the cluster after use: run ./delete2.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"

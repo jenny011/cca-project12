@@ -25,7 +25,7 @@ fi
 
 # Deploy a cluster using "kops"
 echo ">>>>> Deploying cluster... >>>>>"
-echo "!!!!! MUST delete the cluster after use: run ./delete2.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"
 kops update cluster part2$1.k8s.local --yes --admin
 
 # Wait until the cluster is ready to use
@@ -38,7 +38,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo ">>>>> Cluster Ready! >>>>>"
-echo "!!!!! MUST delete the cluster after use: run ./delete2.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"
 
 # Output nodes info to a file
 kubectl get nodes -o wide > $NODES
@@ -55,5 +55,5 @@ echo "gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@parsec-ser
 
 echo ">>>>> Run experiments with ./run-interference2.sh"
 
-echo "!!!!! MUST delete the cluster after use: run ./delete2.sh !!!!!"
+echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"
 
