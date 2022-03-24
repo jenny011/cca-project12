@@ -20,4 +20,4 @@
 2. ssh into client-agent and client-measure
 3. `./run1.sh <benchmark number>`: run benchmark
 4. `./kill1.sh <benchmark number>`: teardown benchmark
-5. `./delete1.sh`: delete the cluster, MUST do if finished using cluster
+5. `./delete.sh`: delete the cluster, MUST do if finished using cluster

@@ -1,0 +1,7 @@
+workload,no-interference,ibench-cpu,ibench-l1d,ibench-l1i,ibench-l2,ibench-llc,ibench-membw
+dedup,1.00,1.56,1.33,2.31,1.46,2.37,1.82
+blackscholes,1.00,1.42,1.41,1.89,1.38,1.69,1.45
+ferret,1.00,2.05,1.09,2.91,1.05,2.81,2.20
+freqmine,1.00,2.05,1.40,2.08,1.08,1.87,1.68
+canneal,1.00,1.39,1.43,1.67,1.43,2.11,1.52
+fft,1.00,1.41,1.36,1.92,1.38,1.90,1.51

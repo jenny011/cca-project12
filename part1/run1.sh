@@ -32,7 +32,7 @@ if [ $1 -ne "0" ]; then
 		exit 1
 	fi
 
-	sleep 90
+	sleep 30
 fi
 	
 # if READY is not 1/1 and STATUS is not Running, manually run get pods again

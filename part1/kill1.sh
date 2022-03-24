@@ -7,7 +7,7 @@ source $CURR/env1.sh
 cd $PART1_YAML_PATH
 echo ">>>>> You are in $PART1_YAML_PATH >>>>>"
 
-if [ $# != 1 ] || [ $1 -eq 0 ] || [[ ! $1 =~ ^[0-9]+$ ]] || (($1 > 6))
+if [ $# != 1 ] || [[ ! $1 =~ ^[0-9]+$ ]] || (($1 > 6))
 then
 	echo "Usage: ./kill1.sh <a number>"
 	echo "Valid numbers:"

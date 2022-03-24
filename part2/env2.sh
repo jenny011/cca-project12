@@ -7,3 +7,4 @@ export KOPS_FEATURE_FLAGS=AlphaAllowGCE
 export PART2_YAML_PATH="<PATH_TO>/cloud-comp-arch-project"
 export NODES="$BASEDIR/nodes.txt"
 export PODS="$BASEDIR/pods.txt"
+export DATADIR=<your-data-directory>

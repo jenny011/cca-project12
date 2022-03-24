@@ -10,7 +10,9 @@
 ## Run experiments
 1. `./deploy2.sh <a OR b>`: deploy the cluster for "part2a" or "part2b", the cluster should be running if no errors.
 2. ssh into parsec-server
-3. `./run-interference2.sh <interference number>`: run interference
-4. `./run-workload2.sh <workload number>`: run workload
-5. `./kill2.sh <benchmark number>`: teardown benchmark
-6. `./delete2.sh <a OR b>`: delete the cluster, MUST do if finished using cluster
+3. `./run2a.sh <interference number> <workload number>`: run 2a experiment with interference
+4. `./getlog2a.sh <interference number> <workload number>`: output 2a log to data file
+5. `./run2b.sh <thread number> <workload number>`: run 2b scaling experiment with no interference
+6. `./getlog2b.sh <thread number> <workload number>`: output 2b log to data file
+7. `./kill2.sh`: teardown all jobs and pods
+8. `./delete.sh <a OR b>`: delete the cluster, MUST do if finished using cluster

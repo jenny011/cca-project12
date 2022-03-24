@@ -2,7 +2,8 @@
 
 ## Notice
 "interference-parsec" folder does NOT exist in cloud-comp-arch-project.\
-I created it for part2a and part2b. Copy the folder into your cloud-comp-arch-project.
+The content of "parsec-benchmarks" folder is different from cloud-comp-arch-project.\
+I created it for automating part2a and part2b. Copy the folders into your cloud-comp-arch-project.
 
 ## PART 1
 
@@ -25,7 +26,7 @@ I created it for part2a and part2b. Copy the folder into your cloud-comp-arch-pr
 2. ssh into client-agent and client-measure
 3. `./run1.sh <benchmark number>`: run benchmark
 4. `./kill1.sh <benchmark number>`: teardown benchmark
-5. `./delete1.sh`: delete the cluster, MUST do if finished using cluster
+5. `./delete.sh`: delete the cluster, MUST do if finished using cluster
 
 ## PART 2
 
@@ -39,14 +40,16 @@ I created it for part2a and part2b. Copy the folder into your cloud-comp-arch-pr
 ### Run experiments
 1. `./deploy2.sh <a OR b>`: deploy the cluster for "part2a" or "part2b", the cluster should be running if no errors.
 2. ssh into parsec-server
-3. `./run-interference2.sh <interference number>`: run interference
-4. `./run-workload2.sh <workload number>`: run workload
-5. `./kill2.sh`: teardown benchmark
-6. `./delete2.sh <a OR b>`: delete the cluster, MUST do if finished using cluster
-
+3. `./run2a.sh <interference number> <workload number>`: run 2a experiment with interference
+4. `./getlog2a.sh <interference number> <workload number>`: output 2a log to data file
+5. `./run2b.sh <thread number> <workload number>`: run 2b scaling experiment with no interference
+6. `./getlog2b.sh <thread number> <workload number>`: output 2b log to data file
+7. `./kill2.sh`: teardown all jobs and pods
+8. `./delete.sh <a OR b>`: delete the cluster, MUST do if finished using cluster
 
 ## Part1-data
 interference_number.tsv
 
 ## Part2-data
-interference_number/workload_number.dat
+part2a-data/interference_number/workload_number.dat
+part2b-data/thread_number/workload_number.dat

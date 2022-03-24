@@ -1,0 +1,7 @@
+workload,no interference,ibench-cpu,ibench-l1d,ibench-l1i,ibench-l2,ibench-llc,ibench-membw
+dedup,1m0.277s,1m34.225s,1m20.023s,2m19.417s,1m27.816s,2m22.684s,1m49.534s
+blackscholes,4m18.963s,6m8.623s,6m5.171s,8m10.045s,5m58.521s,7m17.605s,6m16.428s
+ferret,0m12.802s,0m26.219s,0m13.991s,0m37.211s,0m13.435s,0m36.032s,0m28.178s
+freqmine,0m6.484s,0m13.317s,0m9.092s,0m13.501s,0m7.014s,0m12.106s,0m10.924s
+canneal,0m15.092s,0m21.019s,0m21.558s,0m25.150s,0m21.641s,0m31.809s,0m22.992s
+fft,0m8.919s,0m12.542s,0m12.155s,0m17.085s,0m12.328s,0m16.953s,0m13.444s

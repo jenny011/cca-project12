@@ -1,0 +1,7 @@
+workload,1,3,6,12
+dedup,0m51.022s,0m20.351s,0m24.153s,0m37.926s
+blackscholes,4m5.088s,1m36.110s,1m9.754s,1m2.328s
+ferret,12m25.011s,4m23.578s,3m14.081s,3m9.592s
+freqmine,8m3.330s,2m45.864s,1m52.804s,1m47.322s
+canneal,5m15.088s,2m58.995s,2m23.317s,2m19.486s
+fft,2m38.410s,,,
