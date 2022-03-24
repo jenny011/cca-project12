@@ -24,4 +24,4 @@ make
 ./mcperf -s MEMCACHED_IP --loadonly
 
 # Query memcached with throughput from 5000 to 80000 QPS with increments of 5000
-./mcperf -s MEMCACHED_IP -a INTERNAL_AGENT_IP --noload -T 16 -C 4 -D 4 -Q 1000 -c 4 -t 5 --scan 5000:80000:5000
+./mcperf -s MEMCACHED_IP -a INTERNAL_AGENT_IP --noload -T 16 -C 4 -D 4 -Q 1000 -c 4 -w 2 -t 5 --scan 5000:80000:5000
