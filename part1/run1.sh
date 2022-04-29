@@ -25,7 +25,7 @@ if [ $1 -ne "0" ]; then
 	# Measure 1-6. ibench-<name>
 	NAME=("cpu" "l1d" "l1i" "l2" "llc" "membw")
 	BENCHMARK="ibench-${NAME[$(($1 - 1))]}"
-	echo "You are setting up $BENCHMARK"
+	echo "You are setting up interference/$BENCHMARK.yaml"
 	kubectl create -f interference/$BENCHMARK.yaml
 	if [ $? -ne 0 ]; then
 		echo "ERROR: interference/$BENCHMARK.yaml create failed."
@@ -34,7 +34,7 @@ if [ $1 -ne "0" ]; then
 
 	sleep 30
 fi
-	
+
 # if READY is not 1/1 and STATUS is not Running, manually run get pods again
 kubectl get pods -o wide > $PODS
 if [ $? -ne 0 ]; then

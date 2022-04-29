@@ -1,4 +1,11 @@
-# CCA Project Part 1 and 2
+# CCA Project Part 3-4 and 1-2
+
+## PART 3
+Relevant dirs: "part3", "config", "part3-results"\
+See "part3" for how to use the scripts.\
+Test your config only ONCE to save money.\
+Add your best results (close ones all count) to "part3-results".\
+We can then run the best configs 3 times.
 
 ## Notice
 "interference-parsec" folder does NOT exist in cloud-comp-arch-project.\
