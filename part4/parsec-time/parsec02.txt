@@ -1,0 +1,226 @@
+Name:           parsec-blackscholes
+Namespace:      default
+Selector:       controller-uid=e906fcfa-dec8-47e2-b7d7-5027ad4563d9
+Labels:         name=pasec-blackscholes
+Annotations:    <none>
+Parallelism:    1
+Completions:    1
+Start Time:     Fri, 29 Apr 2022 20:46:36 +0200
+Completed At:   Fri, 29 Apr 2022 20:51:45 +0200
+Duration:       5m9s
+Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  controller-uid=e906fcfa-dec8-47e2-b7d7-5027ad4563d9
+           job-name=parsec-blackscholes
+  Containers:
+   parsecblackscholes:
+    Image:      anakli/parsec:blackscholes-native-reduced
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      /bin/sh
+    Args:
+      -c
+      taskset -c 0-3 ./bin/parsecmgmt -a run -p blackscholes -i native -n 4
+    Limits:
+      cpu:  4
+    Requests:
+      cpu:        3
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Events:
+  Type    Reason            Age    From            Message
+  ----    ------            ----   ----            -------
+  Normal  SuccessfulCreate  9m3s   job-controller  Created pod: parsec-blackscholes-cwgs8
+  Normal  Completed         3m54s  job-controller  Job completed
+
+
+Name:           parsec-canneal
+Namespace:      default
+Selector:       controller-uid=f6964203-1330-4b0a-8fea-f6bf3824915e
+Labels:         name=pasec-canneal
+Annotations:    <none>
+Parallelism:    1
+Completions:    1
+Start Time:     Fri, 29 Apr 2022 20:46:36 +0200
+Completed At:   Fri, 29 Apr 2022 20:51:35 +0200
+Duration:       4m59s
+Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  controller-uid=f6964203-1330-4b0a-8fea-f6bf3824915e
+           job-name=parsec-canneal
+  Containers:
+   parseccanneal:
+    Image:      anakli/parsec:canneal-native-reduced
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      /bin/sh
+    Args:
+      -c
+      taskset -c 6-7 ./bin/parsecmgmt -a run -p canneal -i native -n 2
+    Limits:
+      cpu:  2
+    Requests:
+      cpu:        1
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  9m3s  job-controller  Created pod: parsec-canneal-8sdwc
+  Normal  Completed         4m4s  job-controller  Job completed
+
+
+Name:           parsec-dedup
+Namespace:      default
+Selector:       controller-uid=a528c6e0-6405-4657-94bc-eaac96cf74b7
+Labels:         name=pasec-dedup
+Annotations:    <none>
+Parallelism:    1
+Completions:    1
+Start Time:     Fri, 29 Apr 2022 20:46:35 +0200
+Completed At:   Fri, 29 Apr 2022 20:53:03 +0200
+Duration:       6m28s
+Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  controller-uid=a528c6e0-6405-4657-94bc-eaac96cf74b7
+           job-name=parsec-dedup
+  Containers:
+   parsecdedup:
+    Image:      anakli/parsec:dedup-native-reduced
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      /bin/sh
+    Args:
+      -c
+      taskset -c 0-3 ./bin/parsecmgmt -a run -p dedup -i native -n 4
+    Limits:
+      cpu:  4
+    Requests:
+      cpu:        3
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Events:
+  Type    Reason            Age    From            Message
+  ----    ------            ----   ----            -------
+  Normal  SuccessfulCreate  9m4s   job-controller  Created pod: parsec-dedup-hwxmq
+  Normal  Completed         2m36s  job-controller  Job completed
+
+
+Name:           parsec-ferret
+Namespace:      default
+Selector:       controller-uid=6cc4c253-1e00-4d5b-8686-94837fcb5d90
+Labels:         name=pasec-ferret
+Annotations:    <none>
+Parallelism:    1
+Completions:    1
+Start Time:     Fri, 29 Apr 2022 20:46:35 +0200
+Completed At:   Fri, 29 Apr 2022 20:51:48 +0200
+Duration:       5m13s
+Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  controller-uid=6cc4c253-1e00-4d5b-8686-94837fcb5d90
+           job-name=parsec-ferret
+  Containers:
+   parsecferret:
+    Image:      anakli/parsec:ferret-native-reduced
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      /bin/sh
+    Args:
+      -c
+      taskset -c 0-3 ./bin/parsecmgmt -a run -p ferret -i native -n 4
+    Limits:
+      cpu:  4
+    Requests:
+      cpu:        3
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Events:
+  Type    Reason            Age    From            Message
+  ----    ------            ----   ----            -------
+  Normal  SuccessfulCreate  9m4s   job-controller  Created pod: parsec-ferret-hvsdc
+  Normal  Completed         3m51s  job-controller  Job completed
+
+
+Name:           parsec-freqmine
+Namespace:      default
+Selector:       controller-uid=8e89e1b8-d5c6-4ddb-bbf8-c5b5b1b9148e
+Labels:         name=pasec-freqmine
+Annotations:    <none>
+Parallelism:    1
+Completions:    1
+Start Time:     Fri, 29 Apr 2022 20:46:35 +0200
+Completed At:   Fri, 29 Apr 2022 20:49:30 +0200
+Duration:       2m55s
+Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  controller-uid=8e89e1b8-d5c6-4ddb-bbf8-c5b5b1b9148e
+           job-name=parsec-freqmine
+  Containers:
+   parsecfreqmine:
+    Image:      anakli/parsec:freqmine-native-reduced
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      /bin/sh
+    Args:
+      -c
+      taskset -c 0-5 ./bin/parsecmgmt -a run -p freqmine -i native -n 6
+    Limits:
+      cpu:  6
+    Requests:
+      cpu:        5
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  9m4s  job-controller  Created pod: parsec-freqmine-jvzzc
+  Normal  Completed         6m9s  job-controller  Job completed
+
+
+Name:           parsec-splash2x-fft
+Namespace:      default
+Selector:       controller-uid=41d3de51-8111-4d57-bd85-4f84450904bd
+Labels:         name=pasec-splash2x-fft
+Annotations:    <none>
+Parallelism:    1
+Completions:    1
+Start Time:     Fri, 29 Apr 2022 20:46:36 +0200
+Completed At:   Fri, 29 Apr 2022 20:50:15 +0200
+Duration:       3m39s
+Pods Statuses:  0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  controller-uid=41d3de51-8111-4d57-bd85-4f84450904bd
+           job-name=parsec-splash2x-fft
+  Containers:
+   parsec-splash2x-fft:
+    Image:      anakli/parsec:splash2x-fft-native-reduced
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      /bin/sh
+    Args:
+      -c
+      taskset -c 4-5 ./bin/parsecmgmt -a run -p splash2x.fft -i native -n 2
+    Limits:
+      cpu:  2
+    Requests:
+      cpu:        1500m
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Events:
+  Type    Reason            Age    From            Message
+  ----    ------            ----   ----            -------
+  Normal  SuccessfulCreate  9m3s   job-controller  Created pod: parsec-splash2x-fft-tkj67
+  Normal  Completed         5m24s  job-controller  Job completed

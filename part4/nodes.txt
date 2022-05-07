@@ -1,0 +1,5 @@
+NAME                         STATUS   ROLES    AGE     VERSION   INTERNAL-IP     EXTERNAL-IP      OS-IMAGE             KERNEL-VERSION   CONTAINER-RUNTIME
+client-agent-1g0q            Ready    node     80s     v1.19.7   10.156.15.202   34.159.70.13     Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+client-measure-tttl          Ready    node     80s     v1.19.7   10.156.15.203   35.246.185.178   Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+master-europe-west3-a-slx9   Ready    master   2m23s   v1.19.7   10.156.15.205   34.89.237.164    Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+memcache-server-2ps1         Ready    node     79s     v1.19.7   10.156.15.204   35.234.77.159    Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
