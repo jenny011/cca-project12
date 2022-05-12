@@ -21,8 +21,12 @@ class Scheduler():
         self.ci.create_containers(self.containers.values())
         self.ci.list_containers(self.containers.keys())
 
-    def schedule_containers(self, queue_id):
-        for job in self.groups[queue_id]:
+    def start_containers(self,group_id):
+        for job in self.groups[group_id]:
+            print(job)
+
+    def stop_containers(self,group_id):
+        for job in self.groups[group_id]:
             print(job)
 
     def print_containers(self):
