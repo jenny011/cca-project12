@@ -44,21 +44,10 @@ def extract_QPS(data):
     QPS.pop(0)
     for i in range(len(QPS)):
         QPS[i] = float(QPS[i])
+        if QPS[i] < 30000:
+            print("!!!lower than 30K:", QPS[i])
     return QPS
     #print(QPS)
-
-
-###### 2. plot QPS and latency  ######
-
-def config_QPS_ax(ax):
-    ax.set_ylabel("Queries per second")
-    ax.set_ylim([0, 40000])
-    ax.set_yticks(np.arange(0, 40001, 5000))
-    ax.yaxis.set_major_formatter(
-        FuncFormatter(lambda x_val, tick_pos: "{:.0f}k".format(x_val / 1000)))
-    ax.tick_params(axis='y', labelcolor='tab:red')
-    ax.grid(True)
-    return ax.plot(x_label, QPS, '-x', color='tab:red')
 
 ###### 3. read from json ######
 
@@ -68,114 +57,136 @@ def read_parsec_data(json_file):
 
     running_time = {}
     for i in range(0, 6):
-        running_time[parsec04['items'][i]['status']['containerStatuses'][0]['name']] = [parsec04['items'][i]['status']['containerStatuses'][0]['state']['terminated']['finishedAt'][-9:-1], 
+        running_time[parsec04['items'][i]['status']['containerStatuses'][0]['name'].lstrip("-")] = [parsec04['items'][i]['status']['containerStatuses'][0]['state']['terminated']['finishedAt'][-9:-1], 
         parsec04['items'][i]['status']['containerStatuses'][0]['state']['terminated']['startedAt'][-9:-1]]
     time_finished, time_started, time_last = {},{}, {}
     for item in running_time:
-        time_finished[item[6:]] = time_convert(running_time[item][0])
-        time_started[item[6:]] = time_convert(running_time[item][1])   
-        time_last[item[6:]] = time_convert(running_time[item][0]) - time_convert(running_time[item][1])
+        name = item[6:].lstrip("-")
+        time_finished[name] = time_convert(running_time[item][0])
+        time_started[name] = time_convert(running_time[item][1])   
+        time_last[name] = time_convert(running_time[item][0]) - time_convert(running_time[item][1])
+    return time_started, time_finished, time_last
+
+def extract_start_finish(time_started, time_finished):
+    # print('\n',time_started, '\n', time_finished, '\n', time_last)
+
+    min_finished = time_finished[min(time_finished, key = time_finished.get)]
+    # print("min_finished:  ", min_finished)
+    min_started = time_started[min(time_started, key = time_started.get)]
+    # print("min_started:  ", min_started)
+    mini = min(min_finished, min_started)
+
+    max_finished = time_finished[max(time_finished, key = time_finished.get)]
+    # print("max_finished:  ", max_finished)
+    print("total_time:", max_finished - min_started)
+
+    for item in time_finished:
+        time_finished[item] = time_finished[item] - mini
+
+    for item in time_started:
+        time_started[item] = time_started[item] - mini
+
+    return time_started, time_finished
 
 
-    print('\n',time_started, '\n', time_finished, '\n', time_last)
+
+###### 2. plot QPS and latency  ######
+def plot_latency(axA_95p):
+    axA_95p.set_title("QPS and Latency")
+    axA_95p.set_xlim([0, 16])
+    axA_95p.set_xlabel("timestamp")
+    axA_95p.set_xticks(range(0, 280 + 1, 20))
+    axA_95p.grid(True)
+    axA_95p.set_ylabel("95th percentile latency [ms]")
+    axA_95p.tick_params(axis='y', labelcolor='tab:blue')
+    # axA_95p.set_ylim([0, 3.2])
+    # axA_95p.set_yticks(np.arange(0, 3.2, 0.4))
+    axA_95p.set_ylim([0, 0.5])
+    axA_95p.set_yticks(np.arange(0, 0.5, 0.1))
+
+def plot_qps(axA_QPS):
+    axA_QPS.set_ylabel("Queries Per Second")
+    axA_QPS.set_ylim([0, 40000])
+    axA_QPS.set_yticks(np.arange(0, 40001, 5000))
+    axA_QPS.yaxis.set_major_formatter(
+        FuncFormatter(lambda x_val, tick_pos: "{:.0f}k".format(x_val / 1000)))
+    axA_QPS.tick_params(axis='y', labelcolor='tab:red')
+    axA_QPS.grid(True)
+
+def plot_jobs(ax_events, workloads):
+    ax_events.set_title("Timeline of PARSEC Jobs")
+    ax_events.set_yticks(range(6))
+    ax_events.set_yticklabels(workloads)
+    ax_events.set_ylim([-1, 6])
+    ax_events.set_xlim([0, 200])
+    ax_events.set_xlabel('time [s]')
+    ax_events.set_xticks(range(0, 280 + 1, 20))
+    ax_events.grid(True)
+
+    for idx, name in enumerate(workloads):
+        color = f'C{idx}'
+        ax_events.plot([time_started[name], time_finished[name]],[idx, idx], color=color, linewidth=2)
+        ax_events.scatter(time_started[name], [idx], c=color, marker='|')
+        ax_events.scatter(time_finished[name], [idx], c=color, marker='|')
+
+def annotation_line( ax, xmin, xmax, y, text, ytext=0, linecolor='black', linewidth=1, fontsize=12 ):
+
+    ax.annotate('', xy=(xmin, y), xytext=(xmax, y), xycoords='data', textcoords='data',
+            arrowprops={'arrowstyle': '|-|', 'color':linecolor, 'linewidth':linewidth})
+    ax.annotate('', xy=(xmin, y), xytext=(xmax, y), xycoords='data', textcoords='data',
+            arrowprops={'arrowstyle': '<-', 'color':linecolor, 'linewidth':linewidth})
+
+    xcenter = xmin + (xmax-xmin)/2
+    if ytext==0:
+        ytext = y + ( ax.get_ylim()[1] - ax.get_ylim()[0] ) / 20
+
+    ax.annotate( text, xy=(xcenter,ytext), ha='center', va='center', color=color, fontsize=fontsize)
 
 
 if __name__ == "__main__":
+    basedir = "part3-exp08"
     num_runs = 3
     for i in range(num_runs):
-        memcached_file = "memcached0{0}.txt".format(i+1)
-        json_file = "results{0}.json".format(i+1)
-        figure_name = "Run {0}".format(i+1)
+        memcached_file = f"{basedir}/memcached0{i+1}.txt"
+        json_file = f"{basedir}/results0{i+1}.json"
+        figure_name = f"Run {i+1}"
 
+        # data #
         data = read_mc_data(memcached_file)
-        print(data)
+        # print(data)
         p95 = extract_p95_latency(data)
-        print(p95)
+        # print(p95)
         QPS = extract_QPS(data)
         # print(QPS)
         # used time instead of numbers
-        x_label = [i for i in range(len(QPS))]
+        x_label = [i*20 for i in range(len(QPS))]
         #print(x_label)
 
+        time_started, time_finished, time_last = read_parsec_data(json_file)
+        time_started, time_finished = extract_start_finish(time_started, time_finished)
+
         fig = plt.figure(figsize=(8, 5))
-        axA_95p, ax_events = fig.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1.5]})
-
         fig.suptitle(figure_name)
-        axA_95p.set_title("QPS and latency")
-        axA_95p.set_xlim([0, 16])
-        axA_95p.set_xlabel("Timestamp")
-        axA_95p.set_xticks(range(0, 17, 1))
-        axA_95p.grid(True)
-        axA_95p.set_ylabel("95th Latency / ms")
-        axA_95p.tick_params(axis='y', labelcolor='tab:blue')
-        axA_95p.set_ylim([0, 3.2])
-        axA_95p.set_yticks(np.arange(0, 3.2, 0.4))
-
+        # axA_95p, ax_events = fig.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1.5]})
+        axA_95p = fig.subplots()
+        # axA_QPS = axA_95p.twinx()
+        plot_latency(axA_95p)
+        # plot_qps(axA_QPS)
         artistA_95p, = axA_95p.plot(x_label, p95, 'o-', color='tab:blue')
-        axA_QPS = axA_95p.twinx()
-
-        ###### QPS #######
-        axA_QPS.set_ylabel("Queries per second")
-        axA_QPS.set_ylim([0, 40000])
-        axA_QPS.set_yticks(np.arange(0, 40001, 5000))
-        axA_QPS.yaxis.set_major_formatter(
-            FuncFormatter(lambda x_val, tick_pos: "{:.0f}k".format(x_val / 1000)))
-        axA_QPS.tick_params(axis='y', labelcolor='tab:red')
-        axA_QPS.grid(True)
-        artistA_QPS = axA_QPS.scatter(x_label, QPS,  color='tab:red')    
-
-
-        # artistA_QPS = config_QPS_ax(axA_QPS)
-        # axA_QPS.legend([artistA_QPS, artistA_95p], ['QPS', '95th latency'], loc='upper right')
-        plt.legend([artistA_QPS, artistA_95p], ['QPS', '95th latency'], loc='center right')
-
-        plt.subplots_adjust(hspace=0.2, bottom=0.2)
+        # artistA_QPS, = axA_QPS.plot(x_label, QPS, 'o-', color='tab:red')    
+        # plt.legend([artistA_QPS, artistA_95p], ['QPS', '95th latency'], loc='center right')
+        axA_95p.legend([artistA_95p], ['95th latency'])
+        # plt.subplots_adjust(hspace=0.2, bottom=0.2)
         fig.tight_layout()
 
-        ###### 3. read from json ######
-
-        
-
-
-        min_finished = time_finished[min(time_finished, key = time_finished.get)]
-        print("min_finished:  ", min_finished)
-        min_started = time_started[min(time_started, key = time_started.get)]
-        print("min_started:  ", min_started)
-        mini = min(min_finished, min_started)
-
-        max_finished = time_finished[max(time_finished, key = time_finished.get)]
-        print("max_finished:  ", max_finished)
-        print("total_time:", max_finished - min_started)
-
-
-        for item in time_finished:
-            time_finished[item] = time_finished[item] - mini
-
-        for item in time_started:
-            time_started[item] = time_started[item] - mini
-
-        print('\n',time_started, '\n', time_finished, '\n', time_last)
-
-        ###### 4. plot for PARSEC ######
-
-        workloads = ['dedup', 'canneal', '-splash2x-fft', 'blackscholes', 'ferret', 'freqmine']
-        ax_events.set_yticks(range(6))
-        ax_events.set_yticklabels(workloads)
-        ax_events.set_ylim([-1, 6])
-        ax_events.set_xlim([0, 200])
-        ax_events.set_xlabel('Time / s')
-        ax_events.set_xticks(range(0, 360 + 1, 20))
-        ax_events.grid(True)
-
+        workloads = ['dedup', 'canneal', 'splash2x-fft', 'blackscholes', 'ferret', 'freqmine']
         for idx, name in enumerate(workloads):
             color = f'C{idx}'
-            ax_events.plot([time_started[name], time_finished[name]],[idx, idx], color=color, linewidth=2.5)
-            ax_events.scatter(time_started[name], [idx], c=color, marker='o')
-            ax_events.scatter(time_finished[name], [idx], c=color, marker='x')
-
-
+            annotation_line( ax=axA_95p, text=name, xmin=time_started[name], xmax=time_finished[name], \
+                        y=(idx+1)*0.05, ytext=(idx+1)*0.05 + 0.01, linewidth=1.5, linecolor=color, fontsize=11 )
+        # plot_jobs(ax_events,workloads)
 
         plt.plot()
-        plt.savefig(figure_name + ".pdf")
+        # plt.savefig(figure_name + ".pdf")
         plt.show()
 
