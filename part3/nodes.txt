@@ -1,8 +1,8 @@
-NAME                         STATUS   ROLES    AGE     VERSION   INTERNAL-IP   EXTERNAL-IP      OS-IMAGE             KERNEL-VERSION   CONTAINER-RUNTIME
-client-agent-a-qlqh          Ready    node     61s     v1.19.7   10.156.0.55   34.107.72.192    Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
-client-agent-b-rk94          Ready    node     57s     v1.19.7   10.156.0.53   34.89.216.73     Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
-client-measure-nf7q          Ready    node     59s     v1.19.7   10.156.0.54   34.89.208.12     Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
-master-europe-west3-a-swz2   Ready    master   2m43s   v1.19.7   10.156.0.59   34.141.102.205   Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
-node-a-2core-jn35            Ready    node     64s     v1.19.7   10.156.0.56   34.89.243.168    Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
-node-b-4core-hjlb            Ready    node     57s     v1.19.7   10.156.0.57   34.159.9.25      Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
-node-c-8core-fkr5            Ready    node     62s     v1.19.7   10.156.0.58   34.107.75.88     Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+NAME                         STATUS   ROLES    AGE     VERSION   INTERNAL-IP     EXTERNAL-IP      OS-IMAGE             KERNEL-VERSION   CONTAINER-RUNTIME
+client-agent-a-trrs          Ready    node     88s     v1.19.7   10.156.15.223   34.89.237.164    Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+client-agent-b-k20x          Ready    node     89s     v1.19.7   10.156.15.222   34.141.82.192    Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+client-measure-vjx6          Ready    node     91s     v1.19.7   10.156.15.220   35.198.83.49     Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+master-europe-west3-a-j47z   Ready    master   2m59s   v1.19.7   10.156.15.226   34.141.95.176    Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+node-a-2core-d7rm            Ready    node     91s     v1.19.7   10.156.15.221   35.246.185.178   Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+node-b-4core-3ggv            Ready    node     88s     v1.19.7   10.156.15.225   35.198.89.78     Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15
+node-c-8core-608b            Ready    node     88s     v1.19.7   10.156.15.224   34.159.70.13     Ubuntu 18.04.5 LTS   5.4.0-1036-gcp   docker://19.3.15

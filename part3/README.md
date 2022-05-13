@@ -32,8 +32,5 @@ To start memcached again, run `./memcached3.sh`
 ## Notice
 "scheduling.txt" contains measurements from part1 and 2 for quick reference.\
 Make sure to request less than all cpus (eg. 7.5 for 8 core machine) to give enough cpu time for background processes.\
-If a job stays pending, then the its configuration most likely doesn't fit on the machine.\
-Test your config only ONCE to save money.\
-Add your best results (close ones all count) to "part3-results".\
-We can then run the best configs 3 times.
+If a job stays pending, then the its configuration most likely doesn't fit on the machine.
 

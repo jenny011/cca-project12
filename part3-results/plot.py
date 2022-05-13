@@ -95,14 +95,14 @@ def plot_latency(axA_95p):
     axA_95p.set_title("QPS and Latency")
     axA_95p.set_xlim([0, 16])
     axA_95p.set_xlabel("timestamp")
-    axA_95p.set_xticks(range(0, 280 + 1, 20))
+    axA_95p.set_xticks(range(0, 300 + 1, 20))
     axA_95p.grid(True)
     axA_95p.set_ylabel("95th percentile latency [ms]")
     axA_95p.tick_params(axis='y', labelcolor='tab:blue')
     # axA_95p.set_ylim([0, 3.2])
     # axA_95p.set_yticks(np.arange(0, 3.2, 0.4))
-    axA_95p.set_ylim([0, 0.5])
-    axA_95p.set_yticks(np.arange(0, 0.5, 0.1))
+    axA_95p.set_ylim([0, 0.6])
+    axA_95p.set_yticks(np.arange(0, 0.6, 0.1))
 
 def plot_qps(axA_QPS):
     axA_QPS.set_ylabel("Queries Per Second")
@@ -120,7 +120,7 @@ def plot_jobs(ax_events, workloads):
     ax_events.set_ylim([-1, 6])
     ax_events.set_xlim([0, 200])
     ax_events.set_xlabel('time [s]')
-    ax_events.set_xticks(range(0, 280 + 1, 20))
+    ax_events.set_xticks(range(0, 300 + 1, 20))
     ax_events.grid(True)
 
     for idx, name in enumerate(workloads):
@@ -144,7 +144,7 @@ def annotation_line( ax, xmin, xmax, y, text, ytext=0, linecolor='black', linewi
 
 
 if __name__ == "__main__":
-    basedir = "part3-exp08"
+    basedir = "part3-exp09"
     num_runs = 3
     for i in range(num_runs):
         memcached_file = f"{basedir}/memcached0{i+1}.txt"
@@ -187,6 +187,6 @@ if __name__ == "__main__":
         # plot_jobs(ax_events,workloads)
 
         plt.plot()
-        # plt.savefig(figure_name + ".pdf")
+        plt.savefig(figure_name + ".pdf")
         plt.show()
 

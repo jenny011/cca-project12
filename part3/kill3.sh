@@ -10,6 +10,7 @@ echo ">>>>> You are in $PART3_YAML_PATH >>>>>"
 echo "Deleting all jobs and pods..."
 kubectl get pods -o json > ../part3/parsec-time/parsec.json
 kubectl delete jobs --all
-kubectl delete pods --all
+kubectl get pods
+# kubectl delete pods --all
 
 echo "!!!!! MUST delete the cluster after use: run ./delete.sh !!!!!"
