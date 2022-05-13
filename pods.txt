@@ -1,0 +1,8 @@
+NAME                        READY   STATUS    RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+parsec-blackscholes-422wx   1/1     Running   0          32s   100.96.5.17   node-c-8core-gs1z   <none>           <none>
+parsec-canneal-htk89        1/1     Running   0          31s   100.96.4.19   node-b-4core-cljm   <none>           <none>
+parsec-dedup-f7lrg          0/1     Pending   0          0s    <none>        <none>              <none>           <none>
+parsec-ferret-bhchc         1/1     Running   0          32s   100.96.5.18   node-c-8core-gs1z   <none>           <none>
+parsec-freqmine-46n6r       1/1     Running   0          32s   100.96.4.18   node-b-4core-cljm   <none>           <none>
+parsec-splash2x-fft-d46hm   1/1     Running   0          31s   100.96.4.20   node-b-4core-cljm   <none>           <none>
+some-memcached              1/1     Running   0          35m   100.96.2.2    node-a-2core-bks6   <none>           <none>
