@@ -2,6 +2,7 @@
 ## server node
 
 # Run these once to compile the memcached load generator
+#!/bin/bash
 sudo apt-get update
 sudo apt install -y memcached libmemcached-tools
 sudo systemctl status memcached
@@ -9,7 +10,7 @@ sudo systemctl status memcached
 sudo vim /etc/memcached.conf
 -m 1024
 -l <internal_ip_memcached-server>
--t <threads>
+-t <num of threads>
 
 sudo systemctl restart memcached
 sudo systemctl status memcached
@@ -19,12 +20,15 @@ ps -mo pid,tid,%cpu,psr -p $(pgrep memcached)
 
 # t+6 threads
 
+gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@<NAME> --zone europe-west3-a
+
 # python3 docker
-gcloud compute scp --recurse --ssh-key-file ~/.ssh/cloud-computing /Users/jenny/Desktop/project12/part4/controller ubuntu@memcache-server-<id>:~/ --zone europe-west3-a
+gcloud compute scp --recurse --ssh-key-file ~/.ssh/cloud-computing --zone europe-west3-a /Users/jenny/Desktop/cca-project12/part4/controller ubuntu@memcache-server-qnkx:~/
 
 sudo apt install python3-pip
 pip3 install docker psutil
 sudo usermod -aG docker $USER
 newgrp docker
-
 mkdir data
+
+gcloud compute scp --recurse --ssh-key-file ~/.ssh/cloud-computing --zone europe-west3-a ubuntu@memcache-server-qnkx:~/data /Users/jenny/Desktop/cca-project12/part4/part4-2

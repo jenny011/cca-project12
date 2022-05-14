@@ -1,11 +1,18 @@
 import os, sys, json
-import time
 from Container import *
 
-if __name__ == "__main__":
-    container = ContainerInterface()
+def list_images(self):
+    for image in self.client.images.list("anakli/parsec"):
+        print(f"{image.tags}: {image.short_id}")
 
-    with open(config_file, "r") as config:
+def pull_images(self, jobs):
+    for job in jobs:
+        print("Pulling image:", job["image"])
+        image = self.client.images.pull(job["image"])
+        print("Pulled:", image.tags)
+
+if __name__ == "__main__":
+    with open("containers.json", "r") as config:
         containers = json.load(config)
 
-    container.pull_images(containers.values())
+    pull_images(containers.values())

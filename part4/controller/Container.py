@@ -3,18 +3,9 @@ import docker
 
 
 class ContainerInterface():
-    def __init__(self):
+    def __init__(self, timer=None):
         self.client = docker.from_env()
-
-    def list_images(self):
-        for image in self.client.images.list("anakli/parsec"):
-            print(f"{image.tags}: {image.short_id}")
-
-    def pull_images(self, jobs):
-        for job in jobs:
-            print("Pulling image:", job["image"])
-            image = self.client.images.pull(job["image"])
-            print("Pulled:", image.tags)
+        self.timer = timer
 
     def list_containers(self, job_names):
         for name in job_names:
@@ -22,49 +13,61 @@ class ContainerInterface():
             print(f"{container.name}: {container.status}")
 
     def create_container(self, job):
+        # create container with image
         try:
-            # update container attrs if container exists
             container = self.client.containers.get(job["name"])
-            print("Updating container:", container.name)
-            container.reload()
-        except docker.errors.NotFound:
-            # create container with image
-            print("Creating container for:", job["image"])
-            container = self.client.containers.create(name=job["name"], image=job["image"], command=job["command"], cpuset_cpus=job["cpuset_cpus"], auto_remove=False, detach=True)
-            print("Container created:", container.name)
+        except:
+            print("Create container:", job["name"])
+            container = self.client.containers.create(
+                name=job["name"],
+                image=job["image"],
+                command=job["command"],
+                cpuset_cpus=job["cpuset_cpus"],
+                auto_remove=False, detach=True
+            )
+        # get latest container config + status
+        container.reload()
         self.timer.record_job(job["name"], "create")
+        return container
 
-    def start_container(self, name):
-        container = self.client.containers.get(name)
-        if (container.status == "exited"):
-            container.start(name)
-            self.timer.record_job(name, "start")
+    def start_container(self, container):
+        container.reload()
+        if container.status == "created":
+            container.start()
+            self.timer.record_job(container.name, "start")
 
-    def pause_container(self, name):
-        container = self.client.containers.get(name)
-        if (container.status == "running"):
+    def pause_container(self, container):
+        container.reload()
+        if container.status == "running":
             container.pause()
-            self.timer.record_job(name, "pause")
+            self.timer.record_job(container.name, "pause")
 
-    def unpause_container(self, name):
-        container = self.client.containers.get(name)
-        if (container.status == "paused"):
+    def unpause_container(self, container):
+        container.reload()
+        if container.status == "paused":
             container.unpause()
-            self.timer.record_job(name, "unpause")
+            self.timer.record_job(container.name, "unpause")
 
-    def stop_container(self, name):
-        container = self.client.containers.get(name)
-        if (container.status != "exited"):
+    def stop_container(self, container):
+        container.reload()
+        if container.status != "exited":
             container.stop()
-            self.timer.record_job(name, "stop")
+            self.timer.record_job(container.name, "stop")
 
-    def remove_container(self, name):
-        container = self.client.containers.get(name)
-        self.stop_container(name)
+    def remove_container(self, container):
+        container.reload()
+        self.stop_container(container)
         container.remove()
 
-    def update_container(self, name, cpus, mem=None):
-        container = self.client.containers.get(name)
-        #mem_limit
-        container.update(cpuset_cpus=cpus)
-        self.timer.record_job(name, "update", "-".join(cpus.split(",")))
+    def update_container(self, container, cpus, mem=None):
+        container.reload()
+        if container.status != "exited":
+            container.update(cpuset_cpus=cpus)
+            self.timer.record_job(container.name, "update", "-".join(cpus.split(",")))
+
+    def is_exited(self,container):
+        container.reload()
+        ret = (container.status == "exited")
+        if ret:
+            self.timer.record_job(container.name, "exit")
+        return ret
