@@ -12,7 +12,11 @@ def pull_images(self, jobs):
         print("Pulled:", image.tags)
 
 if __name__ == "__main__":
+    env = docker.from_env()
     with open("containers.json", "r") as config:
         containers = json.load(config)
-
-    pull_images(containers.values())
+    for job in containers.values():
+        print("Pulling image:", job["image"])
+        image = env.images.pull(job["image"])
+        print("Pulled:", image.tags)
+    # pull_images(containers.values())

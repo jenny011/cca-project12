@@ -8,5 +8,6 @@ if __name__ == "__main__":
     expnum = now.strftime("%m_%d_%H_%M_%S")
     controller = Controller(expnum,"containers.json", "groups.json")
 
-    controller.start_jobs()
-    controller.periodic_scheduler()
+    #controller.start_jobs()
+    controller.new_periodic_scheduler()
+    #controller.periodic_scheduler()

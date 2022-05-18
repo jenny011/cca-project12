@@ -18,7 +18,7 @@ class Memcached():
     def get_cpu_percent(self):
         return self.p.cpu_percent(interval=None)
 
-    def set_cpu(self, cpu_num=2):
+    def set_cpu(self, cpu_num=1):
         # print("mc:", self.cpu, cpu_num)
         if self.cpu != cpu_num:
             self.cpu = cpu_num

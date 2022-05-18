@@ -33,6 +33,16 @@ class Scheduler():
                         if container.name == name:
                             batch.append({"container":container,"cpus":self.group_cpu[gid]})
             self.queue.append(batch)
+        # priority list(based on time it takes to finish the job)
+        self.priority = []
+        for name in ["ferret", "canneal", "freqmine", "blackscholes", "fft", "dedup"]:
+            for gid, containers in self.groups.items():
+                for container in containers:
+                    if container.name == name:
+                        self.priority.append(container)
+
+        self.running = []
+
 
     def start_group(self, gid):
         for container in self.groups[gid]:
@@ -109,3 +119,10 @@ class Scheduler():
             for container in v:
                 print(container.name, end="")
             print("\n")
+
+    def start_one(self, idx):
+        self.ci.start_container(self.priority[idx])
+        self.running.append(self.priority[idx])
+
+    def is_finished(self, idx):
+        return self.ci.is_exited(self.priority[idx])

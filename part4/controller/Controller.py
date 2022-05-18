@@ -18,6 +18,32 @@ class Controller():
             print("Starting group", str(i))
             self.scheduler.start_group(str(i))
 
+    def new_periodic_scheduler(self):
+        cur_job = 0
+        self.scheduler.start_one(cur_job)
+        while True:
+            per_core_cpu_util = psutil.cpu_percent(interval=None, percpu=True)
+            mc_prc_cpu_util = self.memcached.get_cpu_percent()
+            print("per core:", per_core_cpu_util)
+            print("memcached:", mc_prc_cpu_util)
+
+            mc_cpu_util = per_core_cpu_util[0]
+            if self.memcached.cpu == 2:
+                mc_cpu_util += per_core_cpu_util[1]
+            print("mc cpu util:", mc_cpu_util)
+
+            if self.scheduler.is_finished(cur_job):
+                cur_job += 1
+                if cur_job == 6:
+                    print("All jobs done")
+                    self.scheduler.remove_all_containers()
+                    self.memcached.set_cpu(2)
+                    self.timer.destroy_timer()
+                    break
+                self.scheduler.start_one(cur_job)
+
+            time.sleep(1)
+
     def periodic_scheduler(self):
         while True:
             # https://psutil.readthedocs.io/en/latest/#psutil.cpu_percent
