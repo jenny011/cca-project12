@@ -15,11 +15,22 @@ import json
 from matplotlib.ticker import FuncFormatter
 from pyparsing import line
 
+
+import os, argparse, sys
+
+
+parser = argparse.ArgumentParser(description='argparse')
+parser.add_argument('--datadir', '-d', help='data directory', required=True)
+args = parser.parse_args()
+
+DATADIR = args.datadir
+
+
 # set the files 
-memcached_file = 'memcached.csv'
-latency_file = 'latency.txt'
-jobs_file = 'jobs.csv'
-controller_file = 'controller.csv'
+memcached_file = os.path.join(DATADIR, 'memcached.csv')
+latency_file = os.path.join(DATADIR, 'latency.txt')
+jobs_file = os.path.join(DATADIR, 'jobs.csv')
+controller_file = os.path.join(DATADIR, 'controller.csv')
 
 ###### 1.read in data from files ######
  
