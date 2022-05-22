@@ -123,7 +123,7 @@ def plot_latency(axA_95p):
     axA_95p.set_title("QPS and Latency")
     axA_95p.set_xlim([0, 16])
     axA_95p.set_xlabel("Time/s")
-    axA_95p.set_xticks(range(0, x_length + 1, 100))
+    axA_95p.set_xticks(range(0, int(x_length) + 1, 100))
     axA_95p.grid(True)
     axA_95p.set_ylabel("95th percentile latency [ms]")
     axA_95p.tick_params(axis='y', labelcolor='tab:blue')
@@ -146,7 +146,7 @@ def plot_qps(axA_QPS):
 
 
 def plot_jobs(ax_events, jobs_time):
-    workloads = ['dedup', 'canneal', 'splash2x-fft', 'blackscholes', 'ferret', 'freqmine']
+    workloads = ['dedup', 'canneal', 'fft', 'blackscholes', 'ferret', 'freqmine']
 
     ax_events.set_title("Timeline of PARSEC Jobs")
     ax_events.set_yticks(range(6))
@@ -154,15 +154,18 @@ def plot_jobs(ax_events, jobs_time):
     ax_events.set_ylim([-1, 6])
     ax_events.set_xlim([0, x_length + 1])
     ax_events.set_xlabel('time [s]')
-    ax_events.set_xticks(range(0, x_length + 1, 100))
+    ax_events.set_xticks(range(0, int(x_length) + 1, 100))
     ax_events.grid(True)
 
+    print(jobs_time)
     for idx, name in enumerate(workloads):
         color = f'C{idx}'
         for record in jobs_time[name]:
+            print(record)
             ax_events.plot(record,[idx, idx], color=color, linewidth=2.5)
             ax_events.scatter(record[0], [idx], c=color, marker='o')
             ax_events.scatter(record[1], [idx], c=color, marker='x')
+    plt.show()
 
 ###### 4. subplot_c: memcached cpu change  ######
 def plot_cpu_num(mem_cpu):
@@ -173,6 +176,31 @@ def plot_cpu_num(mem_cpu):
 # data = read_mc_data
 # QPS = extract_QPS(data)
 # p95 = extract_p95_latency(data)
+
+
+if __name__ == "__main__":
+
+    # data #
+    # data = read_mc_data(memcached_file)
+    # # print(data)
+    # p95 = extract_p95_latency(data)
+    # # print(p95)
+    # QPS = extract_QPS(data)
+    # # print(QPS)
+    # # used time instead of numbers
+    # x_label = [i*20 for i in range(len(QPS))]
+
+    controller_s, controller_e = read_controller_time(controller_file)
+    jobs_time = read_jobs_time(jobs_file, controller_s)
+
+    fig = plt.figure(figsize=(8, 5))
+    fig.suptitle("test")
+    ax_events = fig.subplots()
+
+    plot_jobs(ax_events, jobs_time)
+
+    plt.plot()
+    plt.show()
 
 
 
