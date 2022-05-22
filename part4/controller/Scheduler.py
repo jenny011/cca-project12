@@ -35,11 +35,11 @@ class Scheduler():
             self.queue.append(batch)
         # priority list(based on time it takes to finish the job)
         self.priority = []
-        for name in ["ferret", "canneal", "freqmine", "blackscholes", "fft", "dedup"]:
+        for name in ["ferret", "freqmine", "canneal", "blackscholes", "fft", "dedup"]:
             for gid, containers in self.groups.items():
                 for container in containers:
                     if container.name == name:
-                        self.priority.append(container)
+                        self.priority.append({"container":container, "cpus": self.group_cpu[gid], "act_cpus": self.group_cpu[gid]} )
 
         self.running = []
 
@@ -121,8 +121,16 @@ class Scheduler():
             print("\n")
 
     def start_one(self, idx):
-        self.ci.start_container(self.priority[idx])
-        self.running.append(self.priority[idx])
+        self.ci.start_container(self.priority[idx]["container"])
+        self.running.append(self.priority[idx]["container"])
+
+    def update_one(self, idx, sub):
+        if sub and "1" in self.priority[idx]["act_cpus"]:
+            self.ci.update_container(self.priority[idx]["container"], self.priority[idx]["cpus"][2:])
+            self.priority[idx]["act_cpus"] = self.priority[idx]["cpus"][2:]
+        elif not sub and self.priority[idx]["act_cpus"] != self.priority[idx]["cpus"]:
+            self.ci.update_container(self.priority[idx]["container"], self.priority[idx]["cpus"])
+            self.priority[idx]["act_cpus"] = self.priority[idx]["cpus"]
 
     def is_finished(self, idx):
-        return self.ci.is_exited(self.priority[idx])
+        return self.ci.is_exited(self.priority[idx]["container"])

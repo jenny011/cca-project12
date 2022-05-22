@@ -1,4 +1,3 @@
 {
-    "0": ["freqmine", "fft", "canneal", "ferret"],
-    "1": ["blackscholes", "dedup"]
+    "0": ["fft", "dedup","ferret","freqmine", "canneal", "blackscholes"]
 }

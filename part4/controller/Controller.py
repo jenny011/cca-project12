@@ -19,8 +19,9 @@ class Controller():
             self.scheduler.start_group(str(i))
 
     def new_periodic_scheduler(self):
-        cur_job = 0
-        self.scheduler.start_one(cur_job)
+
+        # run ferret
+        self.scheduler.start_one(0)
         while True:
             per_core_cpu_util = psutil.cpu_percent(interval=None, percpu=True)
             mc_prc_cpu_util = self.memcached.get_cpu_percent()
@@ -32,17 +33,91 @@ class Controller():
                 mc_cpu_util += per_core_cpu_util[1]
             print("mc cpu util:", mc_cpu_util)
 
-            if self.scheduler.is_finished(cur_job):
-                cur_job += 1
-                if cur_job == 6:
-                    print("All jobs done")
-                    self.scheduler.remove_all_containers()
-                    self.memcached.set_cpu(2)
-                    self.timer.destroy_timer()
-                    break
-                self.scheduler.start_one(cur_job)
+            if mc_prc_cpu_util <= 70:
+                self.memcached.set_cpu(1)
+                self.scheduler.update_one(0, False)
+            else:
+                self.scheduler.update_one(0, True)
+                self.memcached.set_cpu(2)
+            if self.scheduler.is_finished(0):
+                break
+            time.sleep(0.5)
 
-            time.sleep(1)
+        # run freqmine and dedup
+        self.scheduler.start_one(1)
+        self.scheduler.start_one(5)
+        while True:
+            per_core_cpu_util = psutil.cpu_percent(interval=None, percpu=True)
+            mc_prc_cpu_util = self.memcached.get_cpu_percent()
+            print("per core:", per_core_cpu_util)
+            print("memcached:", mc_prc_cpu_util)
+
+            mc_cpu_util = per_core_cpu_util[0]
+            if self.memcached.cpu == 2:
+                mc_cpu_util += per_core_cpu_util[1]
+            print("mc cpu util:", mc_cpu_util)
+
+            if mc_prc_cpu_util <= 70:
+                self.memcached.set_cpu(1)
+                self.scheduler.update_one(1, False)
+                self.scheduler.update_one(5, False)
+            else:
+                self.scheduler.update_one(1, True)
+                self.scheduler.update_one(5, True)
+                self.memcached.set_cpu(2)
+            if self.scheduler.is_finished(1) and self.scheduler.is_finished(5):
+                break
+            time.sleep(0.5)
+
+        # run canneal and fft
+        self.scheduler.start_one(2)
+        self.scheduler.start_one(4)
+        while True:
+            per_core_cpu_util = psutil.cpu_percent(interval=None, percpu=True)
+            mc_prc_cpu_util = self.memcached.get_cpu_percent()
+            print("per core:", per_core_cpu_util)
+            print("memcached:", mc_prc_cpu_util)
+
+            mc_cpu_util = per_core_cpu_util[0]
+            if self.memcached.cpu == 2:
+                mc_cpu_util += per_core_cpu_util[1]
+            print("mc cpu util:", mc_cpu_util)
+
+            if mc_prc_cpu_util <= 70:
+                self.memcached.set_cpu(1)
+                self.scheduler.update_one(2, False)
+                self.scheduler.update_one(4, False)
+            else:
+                self.scheduler.update_one(2, True)
+                self.scheduler.update_one(4, True)
+                self.memcached.set_cpu(2)
+            if self.scheduler.is_finished(2) and self.scheduler.is_finished(4):
+                break
+            time.sleep(0.5)
+
+        # run blackscholes
+        self.scheduler.start_one(3)
+        while True:
+            per_core_cpu_util = psutil.cpu_percent(interval=None, percpu=True)
+            mc_prc_cpu_util = self.memcached.get_cpu_percent()
+            print("per core:", per_core_cpu_util)
+            print("memcached:", mc_prc_cpu_util)
+
+            mc_cpu_util = per_core_cpu_util[0]
+            if self.memcached.cpu == 2:
+                mc_cpu_util += per_core_cpu_util[1]
+            print("mc cpu util:", mc_cpu_util)
+
+            if mc_prc_cpu_util <= 70:
+                self.memcached.set_cpu(1)
+                self.scheduler.update_one(3, False)
+            else:
+                self.scheduler.update_one(3, True)
+                self.memcached.set_cpu(2)
+            if self.scheduler.is_finished(3):
+                self.scheduler.remove_all_containers()
+                break
+            time.sleep(0.5)
 
     def periodic_scheduler(self):
         while True:
