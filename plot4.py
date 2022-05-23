@@ -85,7 +85,7 @@ def read_jobs_time(jobs_file, shift):
     jobs_time = {'dedup':[], 'freqmine':[], 'fft':[], 'ferret':[], 'canneal':[], 'blackscholes':[]}
     start_flag = ['start', 'unpause']
     end_flag = ['exit', 'pause']
-    stack = [] # help match each job's begin time and end/pause time
+    stacks = {'dedup':[], 'freqmine':[], 'fft':[], 'ferret':[], 'canneal':[], 'blackscholes':[]} # help match each job's begin time and end/pause time
     with open(jobs_file) as file:
         line = file.readline() 
         while line:
@@ -93,16 +93,14 @@ def read_jobs_time(jobs_file, shift):
             job, timestamp, operation = line.split(',')[0], float(line.split(',')[1]) - shift, line.split(',')[2]
             #print(job, timestamp, operation)
             if operation in start_flag:
-                stack.append([job, timestamp])
+                stacks[job].append([job, timestamp])
             elif operation in end_flag:
-                for item in stack:
-                    if item[0] == job:
-                        jobs_time[job].append([item[1], timestamp])
-                        stack.remove(item)
-                        break
-                        
+                # print(job, operation)
+                if len(stacks[job]) > 0:
+                    item = stacks[job].pop(-1)
+                    jobs_time[job].append([item[1], timestamp])
             line = file.readline()
-        return jobs_time
+    return jobs_time
 
 # print(read_jobs_time(jobs_file))
 

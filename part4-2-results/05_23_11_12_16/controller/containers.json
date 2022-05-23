@@ -1,0 +1,38 @@
+{
+    "blackscholes": {
+        "name":"blackscholes",
+        "image":"anakli/parsec:blackscholes-native-reduced",
+        "command":"./bin/parsecmgmt -a run -p blackscholes -i native -n 3",
+        "cpuset_cpus":"1,2,3"
+    },
+    "canneal": {
+        "name":"canneal",
+        "image":"anakli/parsec:canneal-native-reduced",
+        "command":"./bin/parsecmgmt -a run -p canneal -i native -n 2",
+        "cpuset_cpus":"1,2,3"
+    },
+    "dedup": {
+        "name":"dedup",
+        "image":"anakli/parsec:dedup-native-reduced",
+        "command":"./bin/parsecmgmt -a run -p dedup -i native -n 1",
+        "cpuset_cpus":"1,2,3"
+    },
+    "ferret": {
+        "name":"ferret",
+        "image":"anakli/parsec:ferret-native-reduced",
+        "command":"./bin/parsecmgmt -a run -p ferret -i native -n 3",
+        "cpuset_cpus":"1,2,3"
+    },
+    "fft": {
+        "name":"fft",
+        "image":"anakli/parsec:splash2x-fft-native-reduced",
+        "command":"./bin/parsecmgmt -a run -p splash2x.fft -i native -n 1",
+        "cpuset_cpus":"1,2,3"
+    },
+    "freqmine": {
+        "name":"freqmine",
+        "image":"anakli/parsec:freqmine-native-reduced",
+        "command":"./bin/parsecmgmt -a run -p freqmine -i native -n 3",
+        "cpuset_cpus":"1,2,3"
+    }
+}
