@@ -25,14 +25,14 @@ class Scheduler():
             print(gid, cpu)
 
         # populate self.queue
-        # for names in [["ferret"], ["freqmine"], ["canneal", "blackscholes"], ["dedup", "fft"]]:
-        #     batch = []
-        #     for name in names:
-        #         for gid, containers in self.groups.items():
-        #             for container in containers:
-        #                 if container.name == name:
-        #                     batch.append({"container":container,"cpus":self.group_cpu[gid]})
-        #     self.queue.append(batch)
+        for names in [["ferret"], ["freqmine"], ["canneal", "blackscholes"], ["dedup", "fft"]]:
+            batch = []
+            for name in names:
+                for gid, containers in self.groups.items():
+                    for container in containers:
+                        if container.name == name:
+                            batch.append({"container":container,"cpus":self.group_cpu[gid]})
+            self.queue.append(batch)
         # priority list(based on time it takes to finish the job)
         self.priority = []
         for name in ["ferret", "freqmine", "canneal", "blackscholes", "fft", "dedup"]:
@@ -63,7 +63,7 @@ class Scheduler():
     def update_group(self, gid, add_cpus=""):
         # update cpu affinity of group
         # print("group:", self.group_cpu[gid], cpus)
-        # print(">>> Update group", gid, "to cpu list", add_cpus+self.group_cpu[gid])
+        print(">>> Update group", gid, "to cpu list", add_cpus+self.group_cpu[gid])
         for container in self.groups[gid]:
             self.ci.update_container(container, add_cpus+self.group_cpu[gid])
 
