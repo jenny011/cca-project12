@@ -6,6 +6,11 @@
 sudo apt-get update
 sudo apt install -y memcached libmemcached-tools
 sudo systemctl status memcached
+sudo apt install python3-pip
+pip3 install docker psutil
+sudo usermod -aG docker $USER
+newgrp docker
+mkdir data
 
 sudo vim /etc/memcached.conf
 -m 1024
@@ -24,11 +29,5 @@ gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@<NAME> --zone eu
 
 # python3 docker
 gcloud compute scp --recurse --ssh-key-file ~/.ssh/cloud-computing --zone europe-west3-a /Users/jenny/Desktop/cca-project12/part4/controller ubuntu@memcache-server-qnkx:~/
-
-sudo apt install python3-pip
-pip3 install docker psutil
-sudo usermod -aG docker $USER
-newgrp docker
-mkdir data
 
 gcloud compute scp --recurse --ssh-key-file ~/.ssh/cloud-computing --zone europe-west3-a ubuntu@memcache-server-qnkx:~/data /Users/jenny/Desktop/cca-project12/part4/part4-2

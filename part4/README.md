@@ -30,15 +30,14 @@ Our memcached SLO violation is high.
 "line x-y" refers to memcache-server.txt\
 ssh into the vm\
 `$ vim setup.sh`\
-copy-paste line 5-8 into setup.sh\
+copy-paste line 5-13 into setup.sh\
 `$ chmod +x setup.sh`\
 `$ ./setup.sh`\
-config memcached: line 10-13\
-restart memcached: line 15\
+config memcached: line 15-18\
+restart memcached: line 20\
 check that #threads = 6 + t\
-copy controller folder to memcache-server: line 26, use the your path and node id\
-execute line 28-32\
-copy data back to local: line 34, use your path and node id
+copy controller folder to memcache-server: line 28, use the your path and node id\
+copy data back to local: line 33, use your path and node id
 
 + agent and measure: client.txt\
 "line x-y" refers to client.txt\

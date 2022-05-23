@@ -33,7 +33,7 @@ class Controller():
                 mc_cpu_util += per_core_cpu_util[1]
             print("mc cpu util:", mc_cpu_util)
 
-            if mc_prc_cpu_util <= 70:
+            if mc_cpu_util <= 65:
                 self.memcached.set_cpu(1)
                 self.scheduler.update_one(0, False)
             else:
@@ -41,7 +41,7 @@ class Controller():
                 self.memcached.set_cpu(2)
             if self.scheduler.is_finished(0):
                 break
-            time.sleep(0.5)
+            time.sleep(1)
 
         # run freqmine and dedup
         self.scheduler.start_one(1)
@@ -57,7 +57,7 @@ class Controller():
                 mc_cpu_util += per_core_cpu_util[1]
             print("mc cpu util:", mc_cpu_util)
 
-            if mc_prc_cpu_util <= 70:
+            if mc_cpu_util <= 65:
                 self.memcached.set_cpu(1)
                 self.scheduler.update_one(1, False)
                 self.scheduler.update_one(5, False)
@@ -67,7 +67,7 @@ class Controller():
                 self.memcached.set_cpu(2)
             if self.scheduler.is_finished(1) and self.scheduler.is_finished(5):
                 break
-            time.sleep(0.5)
+            time.sleep(1)
 
         # run canneal and fft
         self.scheduler.start_one(2)
@@ -83,7 +83,7 @@ class Controller():
                 mc_cpu_util += per_core_cpu_util[1]
             print("mc cpu util:", mc_cpu_util)
 
-            if mc_prc_cpu_util <= 70:
+            if mc_cpu_util <= 65:
                 self.memcached.set_cpu(1)
                 self.scheduler.update_one(2, False)
                 self.scheduler.update_one(4, False)
@@ -94,7 +94,7 @@ class Controller():
             if self.scheduler.is_finished(4):
                 self.scheduler.start_one(3)
                 break
-            time.sleep(0.5)
+            time.sleep(1)
 
         # run canneal and after fft blackscholes
         while True:
@@ -108,7 +108,7 @@ class Controller():
                 mc_cpu_util += per_core_cpu_util[1]
             print("mc cpu util:", mc_cpu_util)
 
-            if mc_prc_cpu_util <= 70:
+            if mc_cpu_util <= 65:
                 self.memcached.set_cpu(1)
                 self.scheduler.update_one(3, False)
             else:
@@ -116,8 +116,10 @@ class Controller():
                 self.memcached.set_cpu(2)
             if self.scheduler.is_finished(2) and self.scheduler.is_finished(3):
                 self.scheduler.remove_all_containers()
+                self.memcached.set_cpu(2)
+                self.timer.destroy_timer()
                 break
-            time.sleep(0.5)
+            time.sleep(1)
 
     def periodic_scheduler(self):
         while True:
