@@ -67,12 +67,10 @@ class Controller():
             # if self.memcached.cpu == 2:
             #     mc_cpu_util += per_core_cpu_util[1]
             # print("mc cpu util:", mc_cpu_util)
-
-            # don't run fft
-            # if mc_prc_cpu_util <= 50:
-            #     self.scheduler.unpause_one(4)
-            # else:
-            #     self.scheduler.pause_one(4)
+            if mc_prc_cpu_util <= 50:
+                self.scheduler.unpause_one(4)
+            else:
+                self.scheduler.pause_one(4)
 
             if mc_prc_cpu_util <= 70:
                 self.memcached.set_cpu(1)

@@ -139,7 +139,7 @@ def read_cpu_change(memcached_file, shift):
 def plot_latency(axA_95p):
     axA_95p.set_title("QPS and Latency")
     axA_95p.set_xlim([0, 16])
-    axA_95p.set_xlabel("Time/s")
+    axA_95p.set_xlabel("Time [s]")
     axA_95p.set_xticks(range(0, int(x_length) + 1, 100))
     axA_95p.grid(True)
     axA_95p.set_ylabel("95th percentile latency [ms]")
@@ -161,7 +161,7 @@ def plot_qps(axA_QPS):
 def plot_mc(axB_mc):
     axB_mc.set_title("Memcached CPU")
     axB_mc.set_xlim([0, 16])
-    axB_mc.set_xlabel("Time/s")
+    axB_mc.set_xlabel("Time [s]")
     axB_mc.set_xticks(range(0, int(x_length) + 1, 100))
     axB_mc.grid(True)
     axB_mc.set_ylabel("CPU number")
@@ -217,6 +217,7 @@ if __name__ == "__main__":
     mem_cpu = read_cpu_change(memcached_file, controller_s)
 
     fig = plt.figure(figsize=(8, 8))
+    fig.suptitle("Run 1")
 
     axA_95p, ax_events, axB_mc = fig.subplots(3, 1, gridspec_kw={'height_ratios': [3, 2, 3]})
     axA_QPS = axA_95p.twinx()
@@ -238,6 +239,7 @@ if __name__ == "__main__":
     plt.legend([artistB_mc, artistB_QPS], ['memcached cpu', 'QPS'], loc='upper right')
     plt.subplots_adjust(hspace=0.2, bottom=0.2)
     fig.tight_layout()
+
 
     plot_jobs(ax_events, jobs_time)
 

@@ -94,7 +94,7 @@ def extract_start_finish(time_started, time_finished):
 def plot_latency(axA_95p):
     # axA_95p.set_title("Latency")
     axA_95p.set_xlim([0, 16])
-    axA_95p.set_xlabel("timestamp")
+    axA_95p.set_xlabel("Time [s]")
     axA_95p.set_xticks(range(0, 300 + 1, 20))
     axA_95p.grid(True)
     axA_95p.set_ylabel("95th percentile latency [ms]")

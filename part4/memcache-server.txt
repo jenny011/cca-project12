@@ -30,4 +30,4 @@ gcloud compute ssh --ssh-key-file ~/.ssh/cloud-computing ubuntu@<NAME> --zone eu
 # python3 docker
 gcloud compute scp --recurse --ssh-key-file ~/.ssh/cloud-computing --zone europe-west3-a /Users/jenny/Desktop/cca-project12/part4/controller ubuntu@memcache-server-qnkx:~/
 
-gcloud compute scp --recurse --ssh-key-file ~/.ssh/cloud-computing --zone europe-west3-a ubuntu@memcache-server-qnkx:~/data /Users/jenny/Desktop/cca-project12/part4/part4-2
+gcloud compute scp --recurse --ssh-key-file ~/.ssh/cloud-computing --zone europe-west3-a ubuntu@memcache-server-hv2h:~/data /Users/jenny/Desktop/cca-project12/part4-3-data
