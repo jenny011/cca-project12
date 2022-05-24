@@ -119,7 +119,7 @@ def read_cpu_change(memcached_file, shift):
             change_time, cpu_num = float(line.split(',')[0]), float(line.split(',')[1])
             if prev_time != -1:
                 if cpu_num != prev_cpu:
-                    mem_cpu[0].append([prev_time, change_time - shift])
+                    mem_cpu[0].append([prev_time+2, change_time - shift-2])
                     mem_cpu[1].append([prev_cpu, prev_cpu])
                     prev_time = change_time - shift
                     prev_cpu = cpu_num
@@ -128,7 +128,7 @@ def read_cpu_change(memcached_file, shift):
                 prev_cpu = cpu_num
             final_time = change_time - shift
             line = file.readline()
-        mem_cpu[0].append([prev_time, final_time])
+        mem_cpu[0].append([prev_time+2, final_time-2])
         mem_cpu[1].append([prev_cpu, prev_cpu])
     return mem_cpu
 
@@ -188,9 +188,9 @@ def plot_jobs(ax_events, jobs_time):
     for idx, name in enumerate(workloads):
         color = f'C{idx}'
         for record in jobs_time[name]:
-            ax_events.plot(record,[idx, idx], color=color, linewidth=1.5)
-            ax_events.scatter(record[0], [idx], c=color, marker='.')
-            ax_events.scatter(record[1], [idx], c=color, marker='.')
+            ax_events.plot(record,[idx, idx], color=color, linewidth=1.8)
+            ax_events.scatter(record[0], [idx], c=color, marker='')
+            ax_events.scatter(record[1], [idx], c=color, marker='')
 
 ###### 4. subplot_c: memcached cpu change  ######
 def plot_cpu_num(mem_cpu):
@@ -230,9 +230,9 @@ if __name__ == "__main__":
     axB_QPS = axB_mc.twinx()
     plot_mc(axB_mc)
     plot_qps(axB_QPS)
-    artistB_mc, = axB_mc.plot(mem_cpu[0][0],mem_cpu[1][0], '-', color='tab:red', linewidth=1)
+    artistB_mc, = axB_mc.plot(mem_cpu[0][0],mem_cpu[1][0], '-', color='tab:red', linewidth=1.8)
     for i in range(1,len(mem_cpu[0])):
-        axB_mc.plot(mem_cpu[0][i],mem_cpu[1][i], '-', color='tab:red', linewidth=1)
+        axB_mc.plot(mem_cpu[0][i],mem_cpu[1][i], '-', color='tab:red', linewidth=1.8)
     # artistB_mc, = axB_mc.plot(mem_cpu[0], mem_cpu[1], '-', color='tab:red')
     artistB_QPS, = axB_QPS.plot(x_label, QPS, 'o', markersize=3, color='tab:blue')
     plt.legend([artistB_mc, artistB_QPS], ['memcached cpu', 'QPS'], loc='upper right')
