@@ -1,0 +1,3 @@
+{
+    "0": ["fft", "dedup","ferret","freqmine", "canneal", "blackscholes"]
+}

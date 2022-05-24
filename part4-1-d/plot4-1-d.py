@@ -5,12 +5,12 @@ import json
 from matplotlib.ticker import FuncFormatter
 
 def read_mc(dirname):
-    latency = [[] for i in range(1)]
-    qps = [[] for i in range(1)]
-    start_time = [[] for i in range(1)]
-    end_time = [[] for i in range(1)]
+    latency = [[] for i in range(3)]
+    qps = [[] for i in range(3)]
+    start_time = [[] for i in range(3)]
+    end_time = [[] for i in range(3)]
 
-    for fi in range(0,1):
+    for fi in range(0,3):
         with open(f"{dirname}/perf-0{fi+1}.txt") as fd:
             for i, line in enumerate(fd.readlines()):
                 if i >= 1 and i <= 24:
@@ -19,11 +19,15 @@ def read_mc(dirname):
                     start_time[fi].append(float(line.split()[-2])/1000)
                     end_time[fi].append(float(line.split()[-1])/1000)
 
-    # x_avg = [np.mean(x) for x in zip(xs[0],xs[1],xs[2])]   
-    # x_std = [np.std(x) for x in zip(xs[0],xs[1],xs[2])]   
-    # y_avg = [sum(y)/3 for y in zip(ys[0],ys[1],ys[2])]
+
+    latency_avg = [np.mean(x) for x in zip(latency[0],latency[1],latency[2])]   
+    # # x_std = [np.std(x) for x in zip(xs[0],xs[1],xs[2])]   
+    qps_avg = [np.mean(x) for x in zip(qps[0],qps[1],qps[2])]
+    # start_time_avg = [np.mean(x) for x in zip(start_time[0],start_time[1],start_time[2])]
+    # end_time_avg = [np.mean(x) for x in zip(end_time[0],end_time[1],end_time[2])]
     # y_std = [np.std(y) for y in zip(ys[0],ys[1],ys[2])]
-    return latency[0], qps[0], start_time[0], end_time[0]
+    # return latency_avg, qps_avg, start_time_avg, end_time_avg
+    return latency_avg, qps_avg, start_time[0], end_time[0]
 
 def read_cpu(dirname):
     data = []

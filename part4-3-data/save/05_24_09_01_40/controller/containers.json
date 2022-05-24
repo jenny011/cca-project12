@@ -20,7 +20,7 @@
     "ferret": {
         "name":"ferret",
         "image":"anakli/parsec:ferret-native-reduced",
-        "command":"./bin/parsecmgmt -a run -p ferret -i native -n 3",
+        "command":"./bin/parsecmgmt -a run -p ferret -i native -n 6",
         "cpuset_cpus":"1,2,3"
     },
     "fft": {
