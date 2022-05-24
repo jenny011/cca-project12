@@ -44,8 +44,8 @@ def extract_QPS(data):
     QPS.pop(0)
     for i in range(len(QPS)):
         QPS[i] = float(QPS[i])
-        if QPS[i] < 30000:
-            print("!!!lower than 30K:", QPS[i])
+        # if QPS[i] < 30000:
+        #     print("!!!lower than 30K:", QPS[i])
     return QPS
     #print(QPS)
 
@@ -78,15 +78,16 @@ def extract_start_finish(time_started, time_finished):
 
     max_finished = time_finished[max(time_finished, key = time_finished.get)]
     # print("max_finished:  ", max_finished)
-    print("total_time:", max_finished - min_started)
-
+    # print("total_time:", max_finished - min_started)
+    total_time = max_finished - min_started
+    print("total time", total_time)
     for item in time_finished:
         time_finished[item] = time_finished[item] - mini
 
     for item in time_started:
         time_started[item] = time_started[item] - mini
 
-    return time_started, time_finished
+    return time_started, time_finished, total_time
 
 
 
@@ -144,6 +145,8 @@ def annotation_line( ax, xmin, xmax, y, text, ytext=0, linecolor='black', linewi
 
 
 if __name__ == "__main__":
+    workloads = ['canneal', 'ferret', 'freqmine', 'splash2x-fft', 'blackscholes', 'dedup']
+    running_time = {job:[] for job in workloads}
     basedir = "part3-exp09"
     num_runs = 3
     for i in range(num_runs):
@@ -163,8 +166,10 @@ if __name__ == "__main__":
         #print(x_label)
 
         time_started, time_finished, time_last = read_parsec_data(json_file)
-        time_started, time_finished = extract_start_finish(time_started, time_finished)
-
+        time_started, time_finished, total_time= extract_start_finish(time_started, time_finished)
+        for job in workloads:
+            running_time[job].append(time_finished[job] - time_started[job])
+        #print(time_started, time_finished, total_time)
         fig = plt.figure(figsize=(8, 5))
         fig.suptitle(figure_name)
         # axA_95p, ax_events = fig.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1.5]})
@@ -190,3 +195,12 @@ if __name__ == "__main__":
         plt.savefig(figure_name + ".pdf")
         plt.show()
 
+    for job in running_time:
+        record = running_time[job].copy()
+        mean = np.mean(record)
+        std = np.std(record)
+        running_time[job].append(mean)
+        running_time[job].append(std)
+    
+    for job in running_time:
+        print(job, ":" ,running_time[job])
