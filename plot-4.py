@@ -20,17 +20,15 @@ import os, argparse, sys
 
 
 parser = argparse.ArgumentParser(description='argparse')
-parser.add_argument('--datadir', '-d', help='data directory', required=True)
+parser.add_argument('--datadir1', '-d1', help='data directory for first run', required=True)
+parser.add_argument('--datadir2', '-d2', help='data directory for second run', required=True)
+parser.add_argument('--datadir3', '-d3', help='data directory for third run', required=True)
+parser.add_argument('--interval', '-i', help='qps_interval', required=True)
 args = parser.parse_args()
 
-DATADIR = args.datadir
+DATADIRS = [args.datadir1, args.datadir2, args.datadir3]
 
 
-# set the files 
-memcached_file = os.path.join(DATADIR, 'memcached.csv')
-latency_file = os.path.join(DATADIR, 'latency.txt')
-jobs_file = os.path.join(DATADIR, 'jobs.csv')
-controller_file = os.path.join(DATADIR, 'controller.csv')
 
 ###### 1.read in data from files ######
  
@@ -41,11 +39,13 @@ def read_mc_data(memcached_file):
         line = file.readline()
         while line:
             #print(line)
-            line = line.split()
-            L.append(line)
+            if line[0:4] == "read":
+                line = line.split()
+                L.append(line)
             line = file.readline()
     #L[8:188] only keep the data part
-    data = pd.DataFrame(L[8:188], index=None, columns=None, dtype=None, copy=None)
+    data = pd.DataFrame(L, index=None, columns=None, dtype=None, copy=None)
+    print(len(data))
     return data
 
 def extract_p95_latency(data):
@@ -102,7 +102,13 @@ def read_jobs_time(jobs_file, shift):
                         break
                         
             line = file.readline()
-        return jobs_time
+        times = {}
+        for job in jobs_time:
+            total = 0
+            for inter in jobs_time[job]:
+                total += inter[1] - inter[0]
+            times[job] = total
+        return jobs_time, times
 
 # print(read_jobs_time(jobs_file))
 
@@ -138,8 +144,8 @@ def read_cpu_change(memcached_file, shift):
 ###### 2. subplot_a: plot QPS and latency  ######
 def plot_latency(axA_95p):
     axA_95p.set_title("QPS and Latency")
-    axA_95p.set_xlim([0, 16])
-    axA_95p.set_xlabel("Time/s")
+    axA_95p.set_xlim([0, 1300])
+    axA_95p.set_xlabel("Time [s]")
     axA_95p.set_xticks(range(0, int(x_length) + 1, 100))
     axA_95p.grid(True)
     axA_95p.set_ylabel("95th percentile latency [ms]")
@@ -160,8 +166,8 @@ def plot_qps(axA_QPS):
 ###### 3. subplot_b: jobs time  ######
 def plot_mc(axB_mc):
     axB_mc.set_title("Memcached CPU")
-    axB_mc.set_xlim([0, 16])
-    axB_mc.set_xlabel("Time/s")
+    axB_mc.set_xlim([0, 1300])
+    axB_mc.set_xlabel("Time [s]")
     axB_mc.set_xticks(range(0, int(x_length) + 1, 100))
     axB_mc.grid(True)
     axB_mc.set_ylabel("CPU number")
@@ -204,43 +210,64 @@ def plot_cpu_num(mem_cpu):
 
 
 if __name__ == "__main__":
+    times = {"dedup":[], 
+            "fft":[], 
+            "ferret":[], 
+            "freqmine":[], 
+            "canneal":[], 
+            "blackscholes": []}
+    for DATADIR in DATADIRS:
+        # set the files 
+        memcached_file = os.path.join(DATADIR, 'memcached.csv')
+        latency_file = os.path.join(DATADIR, 'latency.txt')
+        jobs_file = os.path.join(DATADIR, 'jobs.csv')
+        controller_file = os.path.join(DATADIR, 'controller.csv')
+        
+        data = read_mc_data(latency_file)
+        p95 = extract_p95_latency(data)
+        QPS = extract_QPS(data)
+        x_label = [i*int(args.interval) for i in range(len(QPS))]
 
-    data = read_mc_data(latency_file)
-    p95 = extract_p95_latency(data)
-    QPS = extract_QPS(data)
-    x_label = [i*10 for i in range(len(QPS))]
+        controller_s, controller_e = read_controller_time(controller_file)
+        x_length = controller_e - controller_s
+        print("Total time:", x_length/60)
+        jobs_time, one_times = read_jobs_time(jobs_file, controller_s)
+        for job in one_times:
+            times[job].append(one_times[job])
+        mem_cpu = read_cpu_change(memcached_file, controller_s)
 
-    controller_s, controller_e = read_controller_time(controller_file)
-    x_length = controller_e - controller_s
-    print("Total time:", x_length/60)
-    jobs_time = read_jobs_time(jobs_file, controller_s)
-    mem_cpu = read_cpu_change(memcached_file, controller_s)
+        fig = plt.figure(figsize=(8, 8))
+        fig.suptitle("Run 1")
 
-    fig = plt.figure(figsize=(8, 8))
+        axA_95p, ax_events, axB_mc = fig.subplots(3, 1, gridspec_kw={'height_ratios': [3, 2, 3]})
+        axA_QPS = axA_95p.twinx()
+        plot_latency(axA_95p)
+        plot_qps(axA_QPS)
+        artistA_95p, = axA_95p.plot(x_label, p95, 'o-', markersize=3, color='tab:red')
+        axA_95p.plot(x_label, [1.5 for x in x_label], '-', color='tab:green')
+        artistA_QPS, = axA_QPS.plot(x_label, QPS, 'o', markersize=3, color='tab:blue')    
+        plt.legend([artistA_QPS, artistA_95p], ['QPS', '95th latency'], loc='upper right')
 
-    axA_95p, ax_events, axB_mc = fig.subplots(3, 1, gridspec_kw={'height_ratios': [3, 2, 3]})
-    axA_QPS = axA_95p.twinx()
-    plot_latency(axA_95p)
-    plot_qps(axA_QPS)
-    artistA_95p, = axA_95p.plot(x_label, p95, 'o-', markersize=3, color='tab:red')
-    axA_95p.plot(x_label, [1.5 for x in x_label], '-', color='tab:green')
-    artistA_QPS, = axA_QPS.plot(x_label, QPS, 'o', markersize=3, color='tab:blue')    
-    plt.legend([artistA_QPS, artistA_95p], ['QPS', '95th latency'], loc='upper right')
+        axB_QPS = axB_mc.twinx()
+        plot_mc(axB_mc)
+        plot_qps(axB_QPS)
+        artistB_mc, = axB_mc.plot(mem_cpu[0][0],mem_cpu[1][0], '-', color='tab:red', linewidth=1.8)
+        for i in range(1,len(mem_cpu[0])):
+            axB_mc.plot(mem_cpu[0][i],mem_cpu[1][i], '-', color='tab:red', linewidth=1.8)
+        # artistB_mc, = axB_mc.plot(mem_cpu[0], mem_cpu[1], '-', color='tab:red')
+        artistB_QPS, = axB_QPS.plot(x_label, QPS, 'o', markersize=3, color='tab:blue')
+        plt.legend([artistB_mc, artistB_QPS], ['memcached cpu', 'QPS'], loc='upper right')
+        plt.subplots_adjust(hspace=0.2, bottom=0.2)
+        fig.tight_layout()
 
-    axB_QPS = axB_mc.twinx()
-    plot_mc(axB_mc)
-    plot_qps(axB_QPS)
-    artistB_mc, = axB_mc.plot(mem_cpu[0][0],mem_cpu[1][0], '-', color='tab:red', linewidth=1.8)
-    for i in range(1,len(mem_cpu[0])):
-        axB_mc.plot(mem_cpu[0][i],mem_cpu[1][i], '-', color='tab:red', linewidth=1.8)
-    # artistB_mc, = axB_mc.plot(mem_cpu[0], mem_cpu[1], '-', color='tab:red')
-    artistB_QPS, = axB_QPS.plot(x_label, QPS, 'o', markersize=3, color='tab:blue')
-    plt.legend([artistB_mc, artistB_QPS], ['memcached cpu', 'QPS'], loc='upper right')
-    plt.subplots_adjust(hspace=0.2, bottom=0.2)
-    fig.tight_layout()
 
-    plot_jobs(ax_events, jobs_time)
+        plot_jobs(ax_events, jobs_time)
 
-    plt.plot()
-    plt.show()
-
+        plt.plot()
+        plt.show()
+    print(times)
+    for job in times:
+        avg = sum(times[job])/3
+        std = np.std(times[job])
+        times[job] = {"mean time":avg, "std" : std}
+    print(times)
