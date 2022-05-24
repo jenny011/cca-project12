@@ -92,7 +92,7 @@ def extract_start_finish(time_started, time_finished):
 
 ###### 2. plot QPS and latency  ######
 def plot_latency(axA_95p):
-    axA_95p.set_title("QPS and Latency")
+    # axA_95p.set_title("Latency")
     axA_95p.set_xlim([0, 16])
     axA_95p.set_xlabel("timestamp")
     axA_95p.set_xticks(range(0, 300 + 1, 20))
@@ -166,7 +166,7 @@ if __name__ == "__main__":
         time_started, time_finished = extract_start_finish(time_started, time_finished)
 
         fig = plt.figure(figsize=(8, 5))
-        fig.suptitle(figure_name)
+        fig.suptitle(figure_name+": Memcached Latency and Timeline of PARSEC Jobs")
         # axA_95p, ax_events = fig.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1.5]})
         axA_95p = fig.subplots()
         # axA_QPS = axA_95p.twinx()

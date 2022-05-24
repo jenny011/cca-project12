@@ -189,8 +189,8 @@ def plot_jobs(ax_events, jobs_time):
         color = f'C{idx}'
         for record in jobs_time[name]:
             ax_events.plot(record,[idx, idx], color=color, linewidth=1.5)
-            ax_events.scatter(record[0], [idx], c=color, marker='o')
-            ax_events.scatter(record[1], [idx], c=color, marker='x')
+            ax_events.scatter(record[0], [idx], c=color, marker='.')
+            ax_events.scatter(record[1], [idx], c=color, marker='.')
 
 ###### 4. subplot_c: memcached cpu change  ######
 def plot_cpu_num(mem_cpu):

@@ -40,12 +40,14 @@ class ContainerInterface():
         container.reload()
         if container.status == "running":
             container.pause()
+            print("pause", container.name)
             self.timer.record_job(container.name, "pause")
 
     def unpause_container(self, container):
         container.reload()
         if container.status == "paused":
             container.unpause()
+            print("unpause", container.name)
             self.timer.record_job(container.name, "unpause")
 
     def stop_container(self, container):
@@ -66,8 +68,10 @@ class ContainerInterface():
             self.timer.record_job(container.name, "update", "-".join(cpus.split(",")))
 
     def is_exited(self,container):
-        container.reload()
         ret = (container.status == "exited")
-        if ret:
-            self.timer.record_job(container.name, "exit")
+        if not ret:
+            container.reload()
+            ret = (container.status == "exited")
+            if ret:
+                self.timer.record_job(container.name, "exit")
         return ret

@@ -41,7 +41,7 @@ class Scheduler():
                     if container.name == name:
                         self.priority.append({"container":container, "cpus": self.group_cpu[gid], "act_cpus": self.group_cpu[gid]} )
 
-        self.running = []
+        self.running = {"ferret":False, "freqmine":False, "canneal":False, "blackscholes":False, "fft":False, "dedup":False}
 
 
     def start_group(self, gid):
@@ -122,15 +122,22 @@ class Scheduler():
 
     def start_one(self, idx):
         self.ci.start_container(self.priority[idx]["container"])
-        self.running.append(self.priority[idx]["container"])
+        self.running[self.priority[idx]["container"]] = True
 
-    def update_one(self, idx, sub):
-        if sub and "1" in self.priority[idx]["act_cpus"]:
-            self.ci.update_container(self.priority[idx]["container"], self.priority[idx]["cpus"][2:])
-            self.priority[idx]["act_cpus"] = self.priority[idx]["cpus"][2:]
-        elif not sub and self.priority[idx]["act_cpus"] != self.priority[idx]["cpus"]:
-            self.ci.update_container(self.priority[idx]["container"], self.priority[idx]["cpus"])
-            self.priority[idx]["act_cpus"] = self.priority[idx]["cpus"]
+    def update_one(self, idx, cpu):
+        if cpu != self.priority[idx]["act_cpus"]:
+            self.ci.update_container(self.priority[idx]["container"], cpu)
+            self.priority[idx]["act_cpus"] = cpu
+
+    def pause_one(self,idx):
+        if self.running[self.priority[idx]["container"].name]:
+            self.ci.pause_container(self.priority[idx]["container"])
+            self.running[self.priority[idx]["container"].name] = False
+
+    def unpause_one(self,idx):
+        if not self.running[self.priority[idx]["container"].name]:
+            self.ci.unpause_container(self.priority[idx]["container"])
+            self.running[self.priority[idx]["container"].name] = True
 
     def is_finished(self, idx):
         return self.ci.is_exited(self.priority[idx]["container"])
