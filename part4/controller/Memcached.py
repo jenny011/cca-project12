@@ -13,7 +13,7 @@ class Memcached():
                self.p = proc
                break
         self.set_cpu()
-        print("memcached initialized")
+        # print("memcached initialized")
 
     def get_cpu_percent(self):
         return self.p.cpu_percent(interval=None)
@@ -24,7 +24,7 @@ class Memcached():
             self.cpu = cpu_num
             cpu_list = ",".join([str(i) for i in range(self.cpu)])
             subprocess.run(["sudo", "taskset", "-a", "-cp", cpu_list, str(self.p.pid)])
-            print(">>> Update mc:", self.cpu, "to cpu list", cpu_list)
+            # print(">>> Update mc:", self.cpu, "to cpu list", cpu_list)
         self.timer.record_mc(cpu_num)
 
     def __repr__(self):

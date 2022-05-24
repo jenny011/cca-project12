@@ -25,23 +25,23 @@ class Scheduler():
             print(gid, cpu)
 
         # populate self.queue
-        for names in [["ferret"], ["freqmine"], ["canneal", "blackscholes"], ["dedup", "fft"]]:
-            batch = []
-            for name in names:
-                for gid, containers in self.groups.items():
-                    for container in containers:
-                        if container.name == name:
-                            batch.append({"container":container,"cpus":self.group_cpu[gid]})
-            self.queue.append(batch)
+        # for names in [["ferret"], ["freqmine"], ["canneal", "blackscholes"], ["dedup", "fft"]]:
+        #     batch = []
+        #     for name in names:
+        #         for gid, containers in self.groups.items():
+        #             for container in containers:
+        #                 if container.name == name:
+        #                     batch.append({"container":container,"cpus":self.group_cpu[gid]})
+        #     self.queue.append(batch)
         # priority list(based on time it takes to finish the job)
         self.priority = []
-        for name in ["ferret", "freqmine", "blackscholes","dedup", "canneal", "fft"]:
+        for name in ["ferret", "freqmine", "canneal", "blackscholes", "fft", "dedup"]:
             for gid, containers in self.groups.items():
                 for container in containers:
                     if container.name == name:
                         self.priority.append({"container":container, "cpus": self.group_cpu[gid], "act_cpus": self.group_cpu[gid]} )
 
-        self.running = []
+        self.running = {"ferret":False, "freqmine":False, "canneal":False, "blackscholes":False, "fft":False, "dedup":False}
 
 
     def start_group(self, gid):
@@ -63,7 +63,7 @@ class Scheduler():
     def update_group(self, gid, add_cpus=""):
         # update cpu affinity of group
         # print("group:", self.group_cpu[gid], cpus)
-        print(">>> Update group", gid, "to cpu list", add_cpus+self.group_cpu[gid])
+        # print(">>> Update group", gid, "to cpu list", add_cpus+self.group_cpu[gid])
         for container in self.groups[gid]:
             self.ci.update_container(container, add_cpus+self.group_cpu[gid])
 
@@ -122,21 +122,22 @@ class Scheduler():
 
     def start_one(self, idx):
         self.ci.start_container(self.priority[idx]["container"])
-        self.running.append(self.priority[idx]["container"])
+        self.running[self.priority[idx]["container"]] = True
 
-    def update_one(self, idx, sub):
-        if sub and "1" in self.priority[idx]["act_cpus"]:
-            self.ci.update_container(self.priority[idx]["container"], self.priority[idx]["cpus"][2:])
-            self.priority[idx]["act_cpus"] = self.priority[idx]["cpus"][2:]
-        elif not sub and self.priority[idx]["act_cpus"] != self.priority[idx]["cpus"]:
-            self.ci.update_container(self.priority[idx]["container"], self.priority[idx]["cpus"])
-            self.priority[idx]["act_cpus"] = self.priority[idx]["cpus"]
+    def update_one(self, idx, cpu):
+        if cpu != self.priority[idx]["act_cpus"]:
+            self.ci.update_container(self.priority[idx]["container"], cpu)
+            self.priority[idx]["act_cpus"] = cpu
 
-    def pause_one(self, idx):
-        self.ci.pause_container(self.priority[idx]["container"])
+    def pause_one(self,idx):
+        if self.running[self.priority[idx]["container"].name]:
+            self.ci.pause_container(self.priority[idx]["container"])
+            self.running[self.priority[idx]["container"].name] = False
 
-    def unpause_one(self, idx):
-        self.ci.unpause_container(self.priority[idx]["container"])
+    def unpause_one(self,idx):
+        if not self.running[self.priority[idx]["container"].name]:
+            self.ci.unpause_container(self.priority[idx]["container"])
+            self.running[self.priority[idx]["container"].name] = True
 
     def is_finished(self, idx):
         return self.ci.is_exited(self.priority[idx]["container"])

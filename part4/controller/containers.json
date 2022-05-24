@@ -9,13 +9,13 @@
         "name":"canneal",
         "image":"anakli/parsec:canneal-native-reduced",
         "command":"./bin/parsecmgmt -a run -p canneal -i native -n 2",
-        "cpuset_cpus":"1,2,3"
+        "cpuset_cpus":"2,3"
     },
     "dedup": {
         "name":"dedup",
         "image":"anakli/parsec:dedup-native-reduced",
-        "command":"./bin/parsecmgmt -a run -p dedup -i native -n 3",
-        "cpuset_cpus":"1,2,3"
+        "command":"./bin/parsecmgmt -a run -p dedup -i native -n 1",
+        "cpuset_cpus":"3"
     },
     "ferret": {
         "name":"ferret",
@@ -26,8 +26,8 @@
     "fft": {
         "name":"fft",
         "image":"anakli/parsec:splash2x-fft-native-reduced",
-        "command":"./bin/parsecmgmt -a run -p splash2x.fft -i native -n 2",
-        "cpuset_cpus":"2,3"
+        "command":"./bin/parsecmgmt -a run -p splash2x.fft -i native -n 1",
+        "cpuset_cpus":"0"
     },
     "freqmine": {
         "name":"freqmine",
