@@ -35,7 +35,7 @@ class Scheduler():
             self.queue.append(batch)
         # priority list(based on time it takes to finish the job)
         self.priority = []
-        for name in ["ferret", "freqmine", "canneal", "blackscholes", "fft", "dedup"]:
+        for name in ["ferret", "freqmine", "blackscholes","dedup", "canneal", "fft"]:
             for gid, containers in self.groups.items():
                 for container in containers:
                     if container.name == name:
@@ -131,6 +131,12 @@ class Scheduler():
         elif not sub and self.priority[idx]["act_cpus"] != self.priority[idx]["cpus"]:
             self.ci.update_container(self.priority[idx]["container"], self.priority[idx]["cpus"])
             self.priority[idx]["act_cpus"] = self.priority[idx]["cpus"]
+
+    def pause_one(self, idx):
+        self.ci.pause_container(self.priority[idx]["container"])
+
+    def unpause_one(self, idx):
+        self.ci.unpause_container(self.priority[idx]["container"])
 
     def is_finished(self, idx):
         return self.ci.is_exited(self.priority[idx]["container"])
