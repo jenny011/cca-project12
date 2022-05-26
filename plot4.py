@@ -130,9 +130,9 @@ def read_cpu_change(memcached_file, shift):
 #print(read_cpu_change(memcached_file))
 
 ###### 2. subplot_a: plot QPS and latency  ######
-def plot_latency(axA_95p):
+def plot_latency(axA_95p, x_length):
     axA_95p.set_title("QPS and Latency")
-    axA_95p.set_xlim([0, 16])
+    axA_95p.set_xlim([0, x_length])
     axA_95p.set_xlabel("Time [s]")
     axA_95p.set_xticks(range(0, int(x_length) + 1, 100))
     axA_95p.grid(True)
@@ -152,9 +152,9 @@ def plot_qps(axA_QPS):
     axA_QPS.tick_params(axis='y', labelcolor='tab:red')
 
 ###### 3. subplot_b: jobs time  ######
-def plot_mc(axB_mc):
+def plot_mc(axB_mc, x_length):
     axB_mc.set_title("Memcached CPU")
-    axB_mc.set_xlim([0, 16])
+    axB_mc.set_xlim([0, x_length])
     axB_mc.set_xlabel("Time [s]")
     axB_mc.set_xticks(range(0, int(x_length) + 1, 100))
     axB_mc.grid(True)
@@ -167,7 +167,7 @@ def plot_mc(axB_mc):
 
 
 
-def plot_jobs(ax_events, jobs_time):
+def plot_jobs(ax_events, jobs_time, x_length):
     workloads = ['dedup', 'canneal', 'fft', 'blackscholes', 'ferret', 'freqmine']
 
     ax_events.set_title("Timeline of PARSEC Jobs")
@@ -220,13 +220,13 @@ if __name__ == "__main__":
 
         axA_95p, ax_events = fig.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1]})
         axA_QPS = axA_95p.twinx()
-        plot_latency(axA_95p)
+        plot_latency(axA_95p, x_length)
         plot_qps(axA_QPS)
         artistA_95p, = axA_95p.plot(x_label, p95, 'o-', markersize=3.5, linewidth=1.8, color='tab:red')
         axA_95p.plot(x_label, [1.5 for x in x_label], '-', linewidth=1, color='tab:green')
         artistA_QPS, = axA_QPS.plot(x_label, QPS, 'o', markersize=3.5, color='tab:blue')    
         plt.legend([artistA_QPS, artistA_95p], ['QPS', '95th latency'], loc='upper right')
-        plot_jobs(ax_events, jobs_time)
+        plot_jobs(ax_events, jobs_time, x_length)
         fig.tight_layout()
 
 
@@ -235,7 +235,7 @@ if __name__ == "__main__":
 
         axB_mc = fig2.subplots()
         axB_QPS = axB_mc.twinx()
-        plot_mc(axB_mc)
+        plot_mc(axB_mc, x_length)
         plot_qps(axB_QPS)
         artistB_mc, = axB_mc.plot(mem_cpu[0][0],mem_cpu[1][0], '-', color='tab:red', linewidth=2)
         for i in range(1,len(mem_cpu[0])):
