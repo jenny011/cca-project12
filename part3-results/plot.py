@@ -149,7 +149,7 @@ if __name__ == "__main__":
     for i in range(num_runs):
         memcached_file = f"{basedir}/memcached0{i+1}.txt"
         json_file = f"{basedir}/results0{i+1}.json"
-        figure_name = f"Run {i+1}"
+        figure_name = f"Part 3 Run {i+1}"
 
         # data #
         data = read_mc_data(memcached_file)
@@ -166,7 +166,7 @@ if __name__ == "__main__":
         time_started, time_finished = extract_start_finish(time_started, time_finished)
 
         fig = plt.figure(figsize=(8, 5))
-        fig.suptitle(figure_name+": Memcached Latency and Timeline of PARSEC Jobs")
+        fig.suptitle(figure_name)
         # axA_95p, ax_events = fig.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1.5]})
         axA_95p = fig.subplots()
         # axA_QPS = axA_95p.twinx()

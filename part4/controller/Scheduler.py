@@ -35,12 +35,18 @@ class Scheduler():
         #     self.queue.append(batch)
         # priority list(based on time it takes to finish the job)
         self.priority = []
-        for name in ["ferret", "freqmine", "canneal", "blackscholes", "fft", "dedup"]:
+        self.collocate = []
+        self.collocate_id = 0
+        for name in ["ferret", "freqmine", "canneal", "blackscholes"]:
             for gid, containers in self.groups.items():
                 for container in containers:
                     if container.name == name:
                         self.priority.append({"container":container, "cpus": self.group_cpu[gid], "act_cpus": self.group_cpu[gid]} )
-
+        for name in ["dedup", "fft"]:
+            for gid, containers in self.groups.items():
+                for container in containers:
+                    if container.name == name:
+                        self.collocate.append({"container":container, "cpus": self.group_cpu[gid], "act_cpus": self.group_cpu[gid]} )
         self.running = {"ferret":False, "freqmine":False, "canneal":False, "blackscholes":False, "fft":False, "dedup":False}
 
 
@@ -120,24 +126,43 @@ class Scheduler():
                 print(container.name, end="")
             print("\n")
 
-    def start_one(self, idx):
-        self.ci.start_container(self.priority[idx]["container"])
-        self.running[self.priority[idx]["container"]] = True
+    def start_one(self, idx, colloc=False):
+        if colloc and self.collocate_id < len(self.collocate):
+            print(f"<==============={self.collocate[self.collocate_id]['container'].name}===============>")
+            self.ci.start_container(self.collocate[self.collocate_id]["container"])
+            self.running[self.collocate[self.collocate_id]["container"]] = True
+        else:
+            self.ci.start_container(self.priority[idx]["container"])
+            self.running[self.priority[idx]["container"]] = True
 
-    def update_one(self, idx, cpu):
-        if cpu != self.priority[idx]["act_cpus"]:
-            self.ci.update_container(self.priority[idx]["container"], cpu)
-            self.priority[idx]["act_cpus"] = cpu
+    def update_one(self, idx, cpu, colloc=False):
+        if colloc:
+            if self.collocate_id < len(self.collocate) and cpu != self.collocate[self.collocate_id]["act_cpus"]:
+                self.ci.update_container(self.collocate[self.collocate_id]["container"], cpu)
+                self.collocate[self.collocate_id]["act_cpus"] = cpu
+        else:
+            if cpu != self.priority[idx]["act_cpus"]:
+                self.ci.update_container(self.priority[idx]["container"], cpu)
+                self.priority[idx]["act_cpus"] = cpu
 
-    def pause_one(self,idx):
-        if self.running[self.priority[idx]["container"].name]:
-            self.ci.pause_container(self.priority[idx]["container"])
-            self.running[self.priority[idx]["container"].name] = False
+    def pause_one(self):
+        if not self.is_finished(0,True):
+            if self.collocate_id < len(self.collocate) and self.running[self.collocate[self.collocate_id]["container"].name]:
+                self.ci.pause_container(self.collocate[self.collocate_id]["container"])
+                self.running[self.collocate[self.collocate_id]["container"].name] = False
 
-    def unpause_one(self,idx):
-        if not self.running[self.priority[idx]["container"].name]:
-            self.ci.unpause_container(self.priority[idx]["container"])
-            self.running[self.priority[idx]["container"].name] = True
+    def unpause_one(self):
+        if not self.is_finished(0,True):
+            if self.collocate_id < len(self.collocate) and not self.running[self.collocate[self.collocate_id]["container"].name]:
+                self.ci.unpause_container(self.collocate[self.collocate_id]["container"])
+                self.running[self.collocate[self.collocate_id]["container"].name] = True
 
-    def is_finished(self, idx):
-        return self.ci.is_exited(self.priority[idx]["container"])
+    def is_finished(self, idx, colloc=False):
+        if colloc and self.collocate_id < len(self.collocate):
+            exited = self.ci.is_exited(self.collocate[self.collocate_id]["container"])
+            if exited:
+                self.collocate_id += 1
+                print(len(self.collocate), self.collocate_id)
+            return exited
+        else:
+            return self.ci.is_exited(self.priority[idx]["container"])

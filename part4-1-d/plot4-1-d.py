@@ -130,8 +130,8 @@ if __name__ == "__main__":
 
 
         if core == 1:
-            plt.title(f"2 Threads, 1 Core")
+            plt.title(f"4.1.d: 2 Threads, 1 Core")
         else:
-            plt.title(f"2 Threads, 2 Cores")
+            plt.title(f"4.1.d: 2 Threads, 2 Cores")
         plt.show()
 

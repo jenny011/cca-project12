@@ -26,12 +26,6 @@ args = parser.parse_args()
 DATADIR = args.datadir
 
 
-# set the files 
-memcached_file = os.path.join(DATADIR, 'memcached.csv')
-latency_file = os.path.join(DATADIR, 'latency.txt')
-jobs_file = os.path.join(DATADIR, 'jobs.csv')
-controller_file = os.path.join(DATADIR, 'controller.csv')
-
 ###### 1.read in data from files ######
  
 # read QPS and latency data
@@ -204,47 +198,56 @@ def plot_cpu_num(mem_cpu):
 
 
 if __name__ == "__main__":
+    for k in range(1,4):
+        memcached_file = os.path.join(DATADIR, str(k), 'memcached.csv')
+        latency_file = os.path.join(DATADIR, str(k), 'latency.txt')
+        jobs_file = os.path.join(DATADIR, str(k), 'jobs.csv')
+        controller_file = os.path.join(DATADIR, str(k), 'controller.csv')
 
-    data = read_mc_data(latency_file)
-    p95 = extract_p95_latency(data)
-    QPS = extract_QPS(data)
-    x_label = [i*10 for i in range(len(QPS))]
+        data = read_mc_data(latency_file)
+        p95 = extract_p95_latency(data)
+        QPS = extract_QPS(data)
+        x_label = [i*10 for i in range(len(QPS))]
 
-    controller_s, controller_e = read_controller_time(controller_file)
-    x_length = controller_e - controller_s
-    print("Total time:", x_length/60)
-    jobs_time = read_jobs_time(jobs_file, controller_s)
-    mem_cpu = read_cpu_change(memcached_file, controller_s)
+        controller_s, controller_e = read_controller_time(controller_file)
+        x_length = controller_e - controller_s
+        print("Total time:", x_length/60)
+        jobs_time = read_jobs_time(jobs_file, controller_s)
+        mem_cpu = read_cpu_change(memcached_file, controller_s)
 
-    fig = plt.figure(figsize=(8, 8))
-    fig.suptitle("Run 1")
+        fig = plt.figure(figsize=(8, 6))
+        fig.suptitle(f"{k}A")
 
-    axA_95p, ax_events, axB_mc = fig.subplots(3, 1, gridspec_kw={'height_ratios': [3, 2, 3]})
-    axA_QPS = axA_95p.twinx()
-    plot_latency(axA_95p)
-    plot_qps(axA_QPS)
-    artistA_95p, = axA_95p.plot(x_label, p95, 'o-', markersize=3, color='tab:red')
-    axA_95p.plot(x_label, [1.5 for x in x_label], '-', color='tab:green')
-    artistA_QPS, = axA_QPS.plot(x_label, QPS, 'o', markersize=3, color='tab:blue')    
-    plt.legend([artistA_QPS, artistA_95p], ['QPS', '95th latency'], loc='upper right')
-
-    axB_QPS = axB_mc.twinx()
-    plot_mc(axB_mc)
-    plot_qps(axB_QPS)
-    artistB_mc, = axB_mc.plot(mem_cpu[0][0],mem_cpu[1][0], '-', color='tab:red', linewidth=1.8)
-    for i in range(1,len(mem_cpu[0])):
-        axB_mc.plot(mem_cpu[0][i],mem_cpu[1][i], '-', color='tab:red', linewidth=1.8)
-    # artistB_mc, = axB_mc.plot(mem_cpu[0], mem_cpu[1], '-', color='tab:red')
-    artistB_QPS, = axB_QPS.plot(x_label, QPS, 'o', markersize=3, color='tab:blue')
-    plt.legend([artistB_mc, artistB_QPS], ['memcached cpu', 'QPS'], loc='upper right')
-    plt.subplots_adjust(hspace=0.2, bottom=0.2)
-    fig.tight_layout()
+        axA_95p, ax_events = fig.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1]})
+        axA_QPS = axA_95p.twinx()
+        plot_latency(axA_95p)
+        plot_qps(axA_QPS)
+        artistA_95p, = axA_95p.plot(x_label, p95, 'o-', markersize=3.5, linewidth=1.8, color='tab:red')
+        axA_95p.plot(x_label, [1.5 for x in x_label], '-', linewidth=1, color='tab:green')
+        artistA_QPS, = axA_QPS.plot(x_label, QPS, 'o', markersize=3.5, color='tab:blue')    
+        plt.legend([artistA_QPS, artistA_95p], ['QPS', '95th latency'], loc='upper right')
+        plot_jobs(ax_events, jobs_time)
+        fig.tight_layout()
 
 
-    plot_jobs(ax_events, jobs_time)
+        fig2 = plt.figure(figsize=(8, 4))
+        fig2.suptitle(f"{k}B")
 
-    plt.plot()
-    plt.show()
+        axB_mc = fig2.subplots()
+        axB_QPS = axB_mc.twinx()
+        plot_mc(axB_mc)
+        plot_qps(axB_QPS)
+        artistB_mc, = axB_mc.plot(mem_cpu[0][0],mem_cpu[1][0], '-', color='tab:red', linewidth=2)
+        for i in range(1,len(mem_cpu[0])):
+            axB_mc.plot(mem_cpu[0][i],mem_cpu[1][i], '-', color='tab:red', linewidth=2)
+        # artistB_mc, = axB_mc.plot(mem_cpu[0], mem_cpu[1], '-', color='tab:red')
+        artistB_QPS, = axB_QPS.plot(x_label, QPS, 'o', markersize=3, color='tab:blue')
+        plt.legend([artistB_mc, artistB_QPS], ['memcached cpu', 'QPS'], loc='upper right')
+        plt.subplots_adjust(hspace=0.2, bottom=0.2)
+        fig2.tight_layout()
+
+        plt.plot()
+        plt.show()
 
 
 
