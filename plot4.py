@@ -27,7 +27,7 @@ DATADIR = args.datadir
 
 
 ###### 1.read in data from files ######
- 
+
 # read QPS and latency data
 def read_mc_data(memcached_file):
     L = []
@@ -35,11 +35,13 @@ def read_mc_data(memcached_file):
         line = file.readline()
         while line:
             #print(line)
-            line = line.split()
-            L.append(line)
+            if line[0:4] == "read":
+                line = line.split()
+                L.append(line)
             line = file.readline()
     #L[8:188] only keep the data part
-    data = pd.DataFrame(L[8:188], index=None, columns=None, dtype=None, copy=None)
+    data = pd.DataFrame(L, index=None, columns=None, dtype=None, copy=None)
+    print(len(data))
     return data
 
 def extract_p95_latency(data):
@@ -81,7 +83,7 @@ def read_jobs_time(jobs_file, shift):
     end_flag = ['exit', 'pause']
     stack = [] # help match each job's begin time and end/pause time
     with open(jobs_file) as file:
-        line = file.readline() 
+        line = file.readline()
         while line:
             #print(shift)
             job, timestamp, operation = line.split(',')[0], float(line.split(',')[1]) - shift, line.split(',')[2]
@@ -94,7 +96,7 @@ def read_jobs_time(jobs_file, shift):
                         jobs_time[job].append([item[1], timestamp])
                         stack.remove(item)
                         break
-                        
+
             line = file.readline()
         times = {}
         for job in jobs_time:
@@ -168,8 +170,8 @@ def plot_mc(axB_mc):
     axB_mc.tick_params(axis='y', labelcolor='tab:blue')
     # axA_95p.set_ylim([0, 3.2])
     # axA_95p.set_yticks(np.arange(0, 3.2, 0.4))
-    axB_mc.set_ylim([0, 4.5])
-    axB_mc.set_yticks(np.arange(1, 4.5, 1))
+    axB_mc.set_ylim([0, 3])
+    axB_mc.set_yticks(np.arange(1, 3, 1))
 
 
 
@@ -204,12 +206,13 @@ def plot_cpu_num(mem_cpu):
 
 
 if __name__ == "__main__":
-    times = {"dedup":[], 
-            "fft":[], 
-            "ferret":[], 
-            "freqmine":[], 
-            "canneal":[], 
+    times = {"dedup":[],
+            "fft":[],
+            "ferret":[],
+            "freqmine":[],
+            "canneal":[],
             "blackscholes": []}
+    interval = 10
     for k in range(1,4):
         memcached_file = os.path.join(DATADIR, str(k), 'memcached.csv')
         latency_file = os.path.join(DATADIR, str(k), 'latency.txt')
@@ -229,7 +232,7 @@ if __name__ == "__main__":
             times[job].append(one_times[job])
         mem_cpu = read_cpu_change(memcached_file, controller_s)
 
-        fig = plt.figure(figsize=(8, 6))
+        fig = plt.figure(figsize=(12, 9))
         fig.suptitle(f"{k}A")
 
         axA_95p, ax_events = fig.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1]})
@@ -249,25 +252,23 @@ if __name__ == "__main__":
 
         axB_mc = fig2.subplots()
         axB_QPS = axB_mc.twinx()
-        plot_mc(axB_mc)
         plot_qps(axB_QPS)
+        plot_mc(axB_mc)
+
         artistB_mc, = axB_mc.plot(mem_cpu[0][0],mem_cpu[1][0], '-', color='tab:red', linewidth=1.5)
         for i in range(1,len(mem_cpu[0])):
             axB_mc.plot(mem_cpu[0][i],mem_cpu[1][i], '-', color='tab:red', linewidth=1.5)
         # artistB_mc, = axB_mc.plot(mem_cpu[0], mem_cpu[1], '-', color='tab:red')
-        artistB_QPS, = axB_QPS.plot(x_label, QPS, 'o', markersize=2.8, color='tab:blue')
-        plt.legend([artistB_mc, artistB_QPS], ['memcached cpu', 'QPS'], loc='upper right')
+        artistB_QPS, = axB_QPS.plot(x_label, QPS, 'o', markersize=2.5, color='tab:blue')
+        plt.legend([artistB_QPS,artistB_mc], ['QPS','memcached cpu'], loc='upper right')
         plt.subplots_adjust(hspace=0.2, bottom=0.2)
         fig2.tight_layout()
 
         plt.plot()
-        plt.show()
+        # plt.show()
 
     for job in times:
         avg = sum(times[job])/3
         std = np.std(times[job])
         times[job] = {"mean time":avg, "std" : std}
     print(times)
-
-
-
