@@ -58,7 +58,7 @@ if __name__ == "__main__":
     plt.legend(title='number of threads and cores', loc='upper left')
 
     ax = plt.gca()
-    ax.set_facecolor('#EDECEF')
+    ax.set_facecolor('#FDFCFF')
     plt.grid()
     plt.show()
 
